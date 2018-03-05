@@ -138,7 +138,7 @@ function _goto_unregister_alias
   fi
 
   # Delete entry from file.
-  echo "$(sed "/^\<$1\>/d" ~/.goto)" > ~/.goto
+  echo "$(sed "/^$1 /d" ~/.goto)" > ~/.goto
   echo "Alias '$1' unregistered successfully."
 }
 
@@ -146,7 +146,7 @@ function _goto_unregister_alias
 function _goto_cleanup()
 {
   while IFS='' read -r entry || [[ -n "$entry" ]]; do
-    al=$(echo $entry | sed 's/[\t ].*//')
+    al=$(echo $entry | sed 's/ .*//')
     dir=$(echo $entry | sed 's/[^ ]* //')
 
     if [ -n "$al" ] && [ ! -d "$dir" ]; then
@@ -210,19 +210,18 @@ function _complete_goto_aliases()
     compopt +o filenames 2>/dev/null
 
     # if you find only one alias don't append the directory
-    COMPREPLY=$(printf ${matches[0]} | sed 's/[\t ].*//')
+    COMPREPLY=$(printf ${matches[0]} | sed 's/ .*//')
   else
     for i in "${!matches[@]}"; do
       # remove the filenames attribute from the completion method
       compopt +o filenames 2>/dev/null
 
       if ! [[ $(uname -s) =~ Darwin* ]]; then
-        matches[$i]="$(echo ${matches[$i]} | sed 's/[\t]/ /g')"
-        matches[$i]=$(printf '%*s' "-$COLUMNS"  "${matches[$i]}")
+        matches[$i]=$(printf '%*s' "-$COLUMNS" "${matches[$i]}")
 
         COMPREPLY+=($(compgen -W "${matches[$i]}"))
       else
-        al=$(echo ${matches[$i]} | sed 's/[\t ].*//')
+        al=$(echo ${matches[$i]} | sed 's/ .*//')
 
         COMPREPLY+=($(compgen -W "$al"))
       fi
@@ -264,4 +263,8 @@ function _complete_goto()
 }
 
 # Register the goto compspec
-complete -o filenames -F _complete_goto goto
+if ! [[ $(uname -s) =~ Darwin* ]]; then
+  complete -o filenames -F _complete_goto goto
+else
+  complete -F _complete_goto goto
+fi

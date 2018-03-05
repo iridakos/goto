@@ -135,7 +135,8 @@ goto --help
 
 ## TODO
 
-* Test on macOS
+* ~~Test on macOS~~ extensively
+* Write [tests](https://github.com/iridakos/goto/issues/2)
 
 ## Contributing
 

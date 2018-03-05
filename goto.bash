@@ -203,7 +203,7 @@ function _complete_goto_aliases()
 {
   local IFS=$'\n' expr
 
-  local matches=($(sed  -n "/^$1/p" ~/.goto 2>/dev/null))
+  local matches=($(sed -n "/^$1/p" ~/.goto 2>/dev/null))
 
   if [ "${#matches[@]}" -eq "1" ]; then
     # remove the filenames attribute from the completion method

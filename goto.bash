@@ -216,10 +216,16 @@ function _complete_goto_aliases()
       # remove the filenames attribute from the completion method
       compopt +o filenames 2>/dev/null
 
-      matches[$i]="$(echo ${matches[$i]} | sed 's/[\t]/ /g')"
-      matches[$i]=$(printf '%*s' "-$COLUMNS"  "${matches[$i]}")
+      if ! [[ $(uname -s) =~ Darwin* ]]; then
+        matches[$i]="$(echo ${matches[$i]} | sed 's/[\t]/ /g')"
+        matches[$i]=$(printf '%*s' "-$COLUMNS"  "${matches[$i]}")
 
-      COMPREPLY+=($(compgen -W "${matches[$i]}"))
+        COMPREPLY+=($(compgen -W "${matches[$i]}"))
+      else
+        al=$(echo ${matches[$i]} | sed 's/[\t ].*//')
+
+        COMPREPLY+=($(compgen -W "$al"))
+      fi
     done
   fi
 }

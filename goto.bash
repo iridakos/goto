@@ -169,7 +169,7 @@ function _goto_directory()
 # Fetches the alias directory.
 function _goto_find_alias_directory()
 {
-  local resolved=$(sed -n "/^$1\s/p" ~/.goto 2>/dev/null | sed 's/[^ ]* //')
+  local resolved=$(sed -n "/^$1 /p" ~/.goto 2>/dev/null | sed 's/[^ ]* //')
   echo "$resolved"
 }
 

@@ -207,14 +207,14 @@ function _complete_goto_aliases()
 
   if [ "${#matches[@]}" -eq "1" ]; then
     # remove the filenames attribute from the completion method
-    compopt +o filenames
+    compopt +o filenames 2>/dev/null
 
     # if you find only one alias don't append the directory
     COMPREPLY=$(printf ${matches[0]} | sed 's/[\t ].*//')
   else
     for i in "${!matches[@]}"; do
       # remove the filenames attribute from the completion method
-      compopt +o filenames
+      compopt +o filenames 2>/dev/null
 
       matches[$i]="$(echo ${matches[$i]} | sed 's/[\t]/ /g')"
       matches[$i]=$(printf '%*s' "-$COLUMNS"  "${matches[$i]}")

@@ -20,6 +20,7 @@ goto dev
 `goto` comes with a nice auto-completion script so that whenever you press the `tab` key after the `goto` command, bash prompts with suggestions of the available aliases:
 
 ```bash
+$ goto <tab>
 bc /etc/bash_completion.d                     
 dev /home/iridakos/development
 rubies /home/iridakos/.rvm/rubies

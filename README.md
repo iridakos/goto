@@ -1,8 +1,8 @@
 # goto
 
-`goto` is a bash utility allowing users to change faster to frequently visited **aliased** directories
+`goto` is a bash utility allowing users to change faster to frequently used directories.
 
-# How does it work?
+## How does it work?
 
 User registers directory aliases, for example:
 ```bash
@@ -15,7 +15,7 @@ goto dev
 
 ![goto demo gif](https://github.com/iridakos/goto/raw/master/doc/goto.gif)
 
-# goto completion
+## goto completion
 
 `goto` comes with a nice auto-completion script so that whenever you press the `tab` key after the `goto` command, bash prompts with suggestions of the available aliases:
 
@@ -25,9 +25,9 @@ dev /home/iridakos/development
 rubies /home/iridakos/.rvm/rubies
 ```
 
-# Installation
+## Installation
 
-Copy the file `goto.bash` somewhere in your filesystem and add a line to source it your `.bashrc`.
+Copy the file `goto.bash` somewhere in your filesystem and add a line in your `.bashrc` to source it.
 
 For example, if you placed the file in your home folder, all you have to do is add the following line to your `.bashrc` file:
 
@@ -35,20 +35,20 @@ For example, if you placed the file in your home folder, all you have to do is a
 source ~/goto.bash
 ```
 
-# Usage
+## Usage
 
-## Change to an aliased directory
+### Change to an aliased directory
 To change to an aliased directory, type:
 ```bash
 goto <alias>
 ```
 
-### Example:
+#### Example:
 ```bash
 goto dev
 ```
 
-## Register an alias
+### Register an alias
 To register a directory alias, type:
 ```bash
 goto -r <alias> <directory>
@@ -58,7 +58,7 @@ or
 goto --register <alias> <directory>
 ```
 
-### Example:
+#### Example:
 ```bash
 goto -r blog /mnt/external/projects/html/blog
 ```
@@ -67,7 +67,7 @@ or
 goto --register blog /mnt/external/projects/html/blog
 ```
 
-### Notes
+#### Notes
 
 * `goto` **expands** the directories hence you can easily alias your current directory with:
 ```bash
@@ -76,7 +76,7 @@ goto -r last_release .
 and it will automatically be aliased to the whole path.
 * Pressing the `tab` key after the alias name, you have the default directory suggestions by bash.
 
-## Unregister an alias
+### Unregister an alias
 
 To unregister an alias, use:
 ```bash
@@ -86,7 +86,7 @@ or
 ```bash
 goto --unregister <alias>
 ```
-### Example
+#### Example
 ```
 goto -u last_release
 ```
@@ -95,11 +95,11 @@ or
 goto --unregister last_release
 ```
 
-### Notes
+#### Notes
 
 Pressing the `tab` key after the command (`-u` or `--unregister`), the completion script will prompt you with the list of registered aliases for your convenience.
 
-## List aliases
+### List aliases
 
 To get the list of your currently registered aliases, use:
 ```bash
@@ -110,7 +110,7 @@ or
 goto --list
 ```
 
-## Cleanup
+### Cleanup
 
 To cleanup the aliases from directories that are no longer accessible in your filesystem, use:
 
@@ -122,7 +122,7 @@ or
 goto --cleanup
 ```
 
-## Help
+### Help
 
 To view the tool's help information, use:
 ```bash

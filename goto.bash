@@ -195,7 +195,7 @@ function _goto_resolve_alias()
 # Completes the goto function with the available commands
 function _complete_goto_commands()
 {
-  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list" -- "$1"))
+  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -c --cleanup" -- "$1"))
 }
 
 # Completes the goto function with the available aliases

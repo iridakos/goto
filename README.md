@@ -1,6 +1,6 @@
 # goto
 
-`goto` is a bash utility allowing users to change faster to frequently used directories.
+`goto` is a bash utility allowing users to change faster to frequently used directories :feet:
 
 ## How does it work?
 

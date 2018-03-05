@@ -61,8 +61,10 @@ function _goto_usage()
 {
   cat <<\USAGE
 usage: goto [<option>] <alias> [<directory>]
+
 default usage:
   goto <alias> - changes to the directory registered for the given alias
+
 OPTIONS:
   -r, --register: registers an alias
     goto -r|--register <alias> <directory>

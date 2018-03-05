@@ -143,7 +143,6 @@ function _goto_unregister_alias
 # Unregisters aliases whose directories no longer exist.
 function _goto_cleanup()
 {
-  sed '/^\s*$/d' ~/.goto
   while IFS='' read -r entry || [[ -n "$entry" ]]; do
     al=$(echo $entry | sed 's/[\t ].*//')
     dir=$(echo $entry | sed 's/[^ ]* //')

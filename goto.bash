@@ -89,8 +89,8 @@ function _goto_expand_directory()
 # Lists regstered aliases.
 function _goto_list_aliases()
 {
-    local IFS=$'\n'
-    echo "$(sed '/^\s*$/d' ~/.goto)"
+  local IFS=$'\n'
+  echo "$(sed '/^\s*$/d' ~/.goto)"
 }
 
 # Registers and alias.

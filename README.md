@@ -133,6 +133,10 @@ or
 goto --help
 ```
 
+## TODO
+
+* Test on macOS
+
 ## Contributing
 
 1. Fork it ( https://github.com/iridakos/goto/fork )

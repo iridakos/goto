@@ -101,7 +101,7 @@ function _goto_register_alias()
     return
   fi
 
-  if ! [[ $1 =~ ^[[:alnum:]]*[[:alpha:]][[:alnum:]]*$ ]]; then
+  if ! [[ $1 =~ ^[a-zA-Z0-9_-]*$ ]]; then
     _goto_error "invalid alias - only alphabetic with numbers"
     return
   fi

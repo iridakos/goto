@@ -137,7 +137,7 @@ goto --help
 ## TODO
 
 * ~~Test on macOS~~ extensively
-* Test in `zsh`
+* Fix `zsh` issues [#7]
 * Write [tests](https://github.com/iridakos/goto/issues/2)
 
 ## Contributing

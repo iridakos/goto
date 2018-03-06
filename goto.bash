@@ -102,7 +102,7 @@ function _goto_register_alias()
   fi
 
   if ! [[ $1 =~ ^[[:alnum:]]+[a-zA-Z0-9_-]*$ ]]; then
-    _goto_error "invalid alias - can start with alphanumeric followed by alphanumeric, dashes or hyphens"
+    _goto_error "invalid alias - can start with letters or digits followed by letters, digits, hyphens or underscores"
     return
   fi
 

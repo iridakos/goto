@@ -83,7 +83,7 @@ USAGE
 # Helpful for ~, ., .. paths
 function _goto_expand_directory()
 {
-  printf "$(cd $1 2>/dev/null && pwd)"
+  printf "$(cd "$1" 2>/dev/null && pwd)"
 }
 
 # Lists regstered aliases.
@@ -116,9 +116,9 @@ function _goto_register_alias()
     return
   fi
 
-  local directory="$(_goto_expand_directory $2)"
+  local directory="$(_goto_expand_directory "$2")"
   if [ -z "$directory" ]; then
-    _goto_error "failed to register $1 to $2 - can't cd to directory"
+    _goto_error "failed to register '$1' to '$2' - can't cd to directory"
     return
   fi
 

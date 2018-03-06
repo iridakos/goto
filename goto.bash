@@ -101,8 +101,8 @@ function _goto_register_alias()
     return
   fi
 
-  if ! [[ $1 =~ ^[a-zA-Z0-9_-]*$ ]]; then
-    _goto_error "invalid alias - only alphabetic with numbers, hyphens, and underscores"
+  if ! [[ $1 =~ ^[[:alnum:]][[:alpha:]]+[a-zA-Z0-9_-]*$ ]]; then
+    _goto_error "invalid alias - only alphabetic with numbers, hyphens, and underscores. Can only start with letters and numbers."
     return
   fi
 

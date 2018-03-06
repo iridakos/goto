@@ -90,7 +90,11 @@ function _goto_expand_directory()
 function _goto_list_aliases()
 {
   local IFS=$'\n'
-  echo "$(sed '/^\s*$/d' ~/.goto)"
+  if [ -f ~/.goto ]; then
+    echo "$(sed '/^\s*$/d' ~/.goto 2>/dev/null)"
+  else
+    echo "You haven't configured any directory aliases yet."
+  fi
 }
 
 # Registers and alias.

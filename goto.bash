@@ -198,7 +198,7 @@ function _goto_find_alias_directory()
 {
   local resolved
 
-  resolved=$(sed -n "s/^$1 \(.*\)/\1/p" ~/.goto 2>/dev/null)
+  resolved=$(sed -n "s/^$1 \\(.*\\)/\\1/p" ~/.goto 2>/dev/null)
   echo "$resolved"
 }
 

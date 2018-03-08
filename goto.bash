@@ -257,9 +257,7 @@ function _complete_goto_aliases()
 
         COMPREPLY+=("$(compgen -W "${matches[$i]}")")
       else
-        al=$("${matches[$i]// */}")
-
-        COMPREPLY+=("$(compgen -W "$al")")
+        COMPREPLY+=("${matches[$i]// */}")
       fi
     done
   fi
@@ -293,9 +291,9 @@ function _complete_goto()
 
     if [[ $prev = "-r" ]] || [[ $prev = "--register" ]]; then
       # prompt with directories only if user tries to register an alias
-      # shellcheck disable=SC2207
       local IFS=$' \t\n'
 
+      # shellcheck disable=SC2207
       COMPREPLY=($(compgen -d -- "$cur"))
     fi
   fi

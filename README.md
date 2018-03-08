@@ -134,6 +134,17 @@ or
 goto --help
 ```
 
+### Version
+
+To view the tool's version, use:
+```bash
+goto -v
+```
+or
+```bash
+goto --version
+```
+
 ## TODO
 
 * ~~Test on macOS~~ extensively

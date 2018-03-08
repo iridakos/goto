@@ -51,6 +51,9 @@ function goto()
     -h|--help)
       _goto_usage
       ;;
+    -v|--version)
+      _goto_version
+      ;;
     *)
       _goto_directory "$subcommand"
       ;;
@@ -76,7 +79,15 @@ OPTIONS:
     goto -c|--cleanup
   -h, --help: prints this help
     goto -h|--help
+  -v, --version: displays the version of the goto script
+    goto -v|--version
 USAGE
+}
+
+# Displays version
+function _goto_version()
+{
+  echo "goto version 1.0.0"
 }
 
 # Expands directory.
@@ -214,7 +225,7 @@ function _goto_resolve_alias()
 # Completes the goto function with the available commands
 function _complete_goto_commands()
 {
-  mapfile -t COMPREPLY < <(compgen -W '-r --register -u --unregister -l --list -c --cleanup' -- "$1")
+  mapfile -t COMPREPLY < <(compgen -W '-r --register -u --unregister -l --list -c --cleanup -v --version' -- "$1")
 }
 
 # Completes the goto function with the available aliases

@@ -164,9 +164,13 @@ function _goto_unregister_alias
 # Unregisters aliases whose directories no longer exist.
 function _goto_cleanup()
 {
+  if ! [ -f ~/.goto ]; then
+    return
+  fi
+
   local IFS=$'\n' match matches al dir
 
-  read -r -a matches <<< "$(cat ~/.goto 2>/dev/null)"
+  read -d '' -r -a matches < ~/.goto
 
   for i in "${!matches[@]}"; do
     IFS=' ' read -r -a match <<< "${matches[$i]}"

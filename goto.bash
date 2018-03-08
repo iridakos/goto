@@ -83,7 +83,7 @@ USAGE
 # Helpful for ~, ., .. paths
 function _goto_expand_directory()
 {
-  printf "$(cd "$1" 2>/dev/null && pwd)"
+  cd "$1" 2>/dev/null && pwd
 }
 
 # Lists regstered aliases.
@@ -91,7 +91,7 @@ function _goto_list_aliases()
 {
   local IFS=$'\n'
   if [ -f ~/.goto ]; then
-    echo "$(sed '/^\s*$/d' ~/.goto 2>/dev/null)"
+    sed '/^\s*$/d' ~/.goto 2>/dev/null
   else
     echo "You haven't configured any directory aliases yet."
   fi
@@ -110,13 +110,16 @@ function _goto_register_alias()
     return
   fi
 
-  local resolved=$(_goto_find_alias_directory $1)
+  local resolved
+  resolved=$(_goto_find_alias_directory "$1")
+
   if [ -n "$resolved" ]; then
     _goto_error "alias '$1' exists"
     return
   fi
 
-  local directory="$(_goto_expand_directory "$2")"
+  local directory
+  directory=$(_goto_expand_directory "$2")
   if [ -z "$directory" ]; then
     _goto_error "failed to register '$1' to '$2' - can't cd to directory"
     return
@@ -135,45 +138,55 @@ function _goto_unregister_alias
     return
   fi
 
-  local resolved=$(_goto_find_alias_directory $1)
+  local resolved
+  resolved=$(_goto_find_alias_directory "$1")
   if [ -z "$resolved" ]; then
     _goto_error "alias '$1' does not exist"
     return
   fi
 
   # Delete entry from file.
-  echo "$(sed "/^$1 /d" ~/.goto)" > ~/.goto
+  sed "/^$1 /d" ~/.goto > ~/.goto_ && mv ~/.goto_ ~/.goto
   echo "Alias '$1' unregistered successfully."
 }
 
 # Unregisters aliases whose directories no longer exist.
 function _goto_cleanup()
 {
-  while IFS='' read -r entry || [[ -n "$entry" ]]; do
-    al=$(echo $entry | sed 's/ .*//')
-    dir=$(echo $entry | sed 's/[^ ]* //')
+  local match al dir
+
+  mapfile -t matches < <(cat ~/.goto 2>/dev/null)
+
+  for i in "${!matches[@]}"; do
+    IFS=' ' read -r -a match <<< "${matches[$i]}"
+
+    al="${match[0]}"
+    dir="${match[*]:1}"
 
     if [ -n "$al" ] && [ ! -d "$dir" ]; then
       echo "Cleaning up: $al - $dir"
-      _goto_unregister_alias $al
+      _goto_unregister_alias "$al"
     fi
-  done <<< "$(cat ~/.goto 2>/dev/null)"
+  done
 }
 
 # Changes to the given alias' directory
 function _goto_directory()
 {
-  local target=$(_goto_resolve_alias "$1")
+  local target
+  target=$(_goto_resolve_alias "$1")
 
   if [ -n "$target" ]; then
-    cd "$target"
+    cd "$target" || _goto_error "Failed to goto '$target'"
   fi
 }
 
 # Fetches the alias directory.
 function _goto_find_alias_directory()
 {
-  local resolved=$(sed -n "/^$1 /p" ~/.goto 2>/dev/null | sed 's/[^ ]* //')
+  local resolved
+
+  resolved=$(sed -n "/^$1 /p" ~/.goto 2>/dev/null | sed 's/[^ ]* //')
   echo "$resolved"
 }
 
@@ -187,7 +200,9 @@ function _goto_error()
 # Fetches alias directory, errors if it doesn't exist.
 function _goto_resolve_alias()
 {
-  local resolved=$(_goto_find_alias_directory "$1")
+  local resolved
+
+  resolved=$(_goto_find_alias_directory "$1")
   if [ -z "$resolved" ]; then
     _goto_error "unregistered alias $1"
     echo ""
@@ -199,22 +214,22 @@ function _goto_resolve_alias()
 # Completes the goto function with the available commands
 function _complete_goto_commands()
 {
-  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -c --cleanup" -- "$1"))
+  mapfile -t COMPREPLY < <(compgen -W '-r --register -u --unregister -l --list -c --cleanup' -- "$1")
 }
 
 # Completes the goto function with the available aliases
 function _complete_goto_aliases()
 {
-  local IFS=$'\n' expr
+  local IFS=$'\n' matches
 
-  local matches=($(sed -n "/^$1/p" ~/.goto 2>/dev/null))
+  mapfile -t matches < <(sed -n "/^$1/p" ~/.goto 2>/dev/null)
 
   if [ "${#matches[@]}" -eq "1" ]; then
     # remove the filenames attribute from the completion method
     compopt +o filenames 2>/dev/null
 
     # if you find only one alias don't append the directory
-    COMPREPLY=$(printf ${matches[0]} | sed 's/ .*//')
+    COMPREPLY=("${matches[0]// *}")
   else
     for i in "${!matches[@]}"; do
       # remove the filenames attribute from the completion method
@@ -223,11 +238,11 @@ function _complete_goto_aliases()
       if ! [[ $(uname -s) =~ Darwin* ]]; then
         matches[$i]=$(printf '%*s' "-$COLUMNS" "${matches[$i]}")
 
-        COMPREPLY+=($(compgen -W "${matches[$i]}"))
+        COMPREPLY+=("$(compgen -W "${matches[$i]}")")
       else
-        al=$(echo ${matches[$i]} | sed 's/ .*//')
+        al=$("${matches[$i]// */}")
 
-        COMPREPLY+=($(compgen -W "$al"))
+        COMPREPLY+=("$(compgen -W "$al")")
       fi
     done
   fi
@@ -261,7 +276,7 @@ function _complete_goto()
 
     if [[ $prev = "-r" ]] || [[ $prev = "--register" ]]; then
       # prompt with directories only if user tries to register an alias
-      COMPREPLY=($(compgen -d -- "$cur"))
+      mapfile -t COMPREPLY < <(compgen -d -- "$cur")
     fi
   fi
 }

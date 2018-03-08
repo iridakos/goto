@@ -235,7 +235,7 @@ function _complete_goto_commands()
   local IFS=$' \t\n'
 
   # shellcheck disable=SC2207
-  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -c --cleanup" -- "$1"))
+  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -c --cleanup -v --version" -- "$1"))
 }
 
 # Completes the goto function with the available aliases

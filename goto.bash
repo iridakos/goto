@@ -97,7 +97,7 @@ function _goto_expand_directory()
   cd "$1" 2>/dev/null && pwd
 }
 
-# Lists regstered aliases.
+# Lists registered aliases.
 function _goto_list_aliases()
 {
   local IFS=$'\n'
@@ -198,7 +198,7 @@ function _goto_find_alias_directory()
 {
   local resolved
 
-  resolved=$(sed -n "/^$1 /p" ~/.goto 2>/dev/null | sed 's/[^ ]* //')
+  resolved=$(sed -n "s/^$1 \\(.*\\)/\\1/p" ~/.goto 2>/dev/null)
   echo "$resolved"
 }
 

@@ -227,7 +227,10 @@ function _goto_resolve_alias()
 # Completes the goto function with the available commands
 function _complete_goto_commands()
 {
-  mapfile -t COMPREPLY < <(compgen -W '-r --register -u --unregister -l --list -c --cleanup -v --version' -- "$1")
+  local IFS=$' \t\n'
+
+  # shellcheck disable=SC2207
+  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -c --cleanup" -- "$1"))
 }
 
 # Completes the goto function with the available aliases
@@ -235,7 +238,8 @@ function _complete_goto_aliases()
 {
   local IFS=$'\n' matches al
 
-  mapfile -t matches < <(sed -n "/^$1/p" ~/.goto 2>/dev/null)
+  # shellcheck disable=SC2207
+  matches=($(sed -n "/^$1/p" ~/.goto 2>/dev/null))
 
   if [ "${#matches[@]}" -eq "1" ]; then
     # remove the filenames attribute from the completion method
@@ -289,7 +293,10 @@ function _complete_goto()
 
     if [[ $prev = "-r" ]] || [[ $prev = "--register" ]]; then
       # prompt with directories only if user tries to register an alias
-      mapfile -t COMPREPLY < <(compgen -d -- "$cur")
+      # shellcheck disable=SC2207
+      local IFS=$' \t\n'
+
+      COMPREPLY=($(compgen -d -- "$cur"))
     fi
   fi
 }

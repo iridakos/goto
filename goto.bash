@@ -164,7 +164,7 @@ function _goto_unregister_alias
 # Unregisters aliases whose directories no longer exist.
 function _goto_cleanup()
 {
-  local match al dir
+  local match matches al dir
 
   mapfile -t matches < <(cat ~/.goto 2>/dev/null)
 
@@ -185,6 +185,7 @@ function _goto_cleanup()
 function _goto_directory()
 {
   local target
+
   target=$(_goto_resolve_alias "$1")
 
   if [ -n "$target" ]; then
@@ -214,6 +215,7 @@ function _goto_resolve_alias()
   local resolved
 
   resolved=$(_goto_find_alias_directory "$1")
+
   if [ -z "$resolved" ]; then
     _goto_error "unregistered alias $1"
     echo ""
@@ -231,7 +233,7 @@ function _complete_goto_commands()
 # Completes the goto function with the available aliases
 function _complete_goto_aliases()
 {
-  local IFS=$'\n' matches
+  local IFS=$'\n' matches al
 
   mapfile -t matches < <(sed -n "/^$1/p" ~/.goto 2>/dev/null)
 
@@ -262,7 +264,7 @@ function _complete_goto_aliases()
 # Bash programmable completion for the goto function
 function _complete_goto()
 {
-  local cur="${COMP_WORDS[$COMP_CWORD]}"
+  local cur="${COMP_WORDS[$COMP_CWORD]}" prev
 
   if [ "$COMP_CWORD" -eq "1" ]; then
     # if we are on the first argument
@@ -275,7 +277,7 @@ function _complete_goto()
     fi
   elif [ "$COMP_CWORD" -eq "2" ]; then
     # if we are on the second argument
-    local prev="${COMP_WORDS[1]}"
+    prev="${COMP_WORDS[1]}"
 
     if [[ $prev = "-u" ]] || [[ $prev = "--unregister" ]]; then
       # prompt with aliases only if user tries to unregister one
@@ -283,7 +285,7 @@ function _complete_goto()
     fi
   elif [ "$COMP_CWORD" -eq "3" ]; then
     # if we are on the third argument
-    local prev="${COMP_WORDS[1]}"
+    prev="${COMP_WORDS[1]}"
 
     if [[ $prev = "-r" ]] || [[ $prev = "--register" ]]; then
       # prompt with directories only if user tries to register an alias

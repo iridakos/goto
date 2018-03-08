@@ -172,8 +172,9 @@ function _goto_cleanup()
 
   read -d '' -r -a matches < ~/.goto
 
+  IFS=' '
   for i in "${!matches[@]}"; do
-    IFS=' ' read -r -a match <<< "${matches[$i]}"
+    read -r -a match <<< "${matches[$i]}"
 
     al="${match[0]}"
     dir="${match[*]:1}"

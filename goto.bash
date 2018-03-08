@@ -97,7 +97,7 @@ function _goto_expand_directory()
   cd "$1" 2>/dev/null && pwd
 }
 
-# Lists regstered aliases.
+# Lists registered aliases.
 function _goto_list_aliases()
 {
   local IFS=$'\n'

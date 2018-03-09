@@ -45,6 +45,12 @@ function goto()
     -u|--unregister) # Unregister an alias
       _goto_unregister_alias "$@"
       ;;
+    -p|--push) # Push the current directory onto the pushd stack, then goto
+      _goto_directory_push "$@"
+      ;;
+    -o|--pop) # Pop the top directory off of the pushd stack, then change that directory
+      _goto_directory_pop
+      ;;
     -l|--list)
       _goto_list_aliases
       ;;
@@ -73,6 +79,10 @@ OPTIONS:
     goto -r|--register <alias> <directory>
   -u, --unregister: unregisters an alias
     goto -u|--unregister <alias>
+  -p, --push: pushes the current directory onto the stack, then performs goto
+    goto -p|--push <alias>
+  -o, --pop: pops the top directory from the stack, then changes to that directory
+    goto -o|--pop
   -l, --list: lists aliases
     goto -l|--list
   -c, --cleanup: cleans up non existent directory aliases
@@ -161,6 +171,25 @@ function _goto_unregister_alias
   echo "Alias '$1' unregistered successfully."
 }
 
+# Pushes the current directory onto the stack, then goto
+function _goto_directory_push()
+{
+  if [ "$#" -ne "1" ]; then
+    _goto_error "usage: goto -p|--push <alias>"
+    return
+  fi
+
+  pushd . 2>&1 1>/dev/null
+
+  _goto_directory $@
+}
+
+# Pops the top directory from the stack, then goto
+function _goto_directory_pop()
+{
+  popd 2>&1 1>/dev/null
+}
+
 # Unregisters aliases whose directories no longer exist.
 function _goto_cleanup()
 {
@@ -235,7 +264,7 @@ function _complete_goto_commands()
   local IFS=$' \t\n'
 
   # shellcheck disable=SC2207
-  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -c --cleanup -v --version" -- "$1"))
+  COMPREPLY=($(compgen -W "-r --register -u --unregister -p --push -o --pop -l --list -c --cleanup -v --version" -- "$1"))
 }
 
 # Completes the goto function with the available aliases
@@ -288,6 +317,9 @@ function _complete_goto()
 
     if [[ $prev = "-u" ]] || [[ $prev = "--unregister" ]]; then
       # prompt with aliases only if user tries to unregister one
+      _complete_goto_aliases "$cur"
+    elif [[ $prev = "-p" ]] || [[ $prev = "--push" ]]; then
+      # prompt with aliases only if user tries to push
       _complete_goto_aliases "$cur"
     fi
   elif [ "$COMP_CWORD" -eq "3" ]; then

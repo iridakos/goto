@@ -48,6 +48,9 @@ function goto()
     -l|--list)
       _goto_list_aliases
       ;;
+    -x|--expand) # Expand an alias
+      _goto_expand_alias "$@"
+      ;;
     -h|--help)
       _goto_usage
       ;;
@@ -75,6 +78,8 @@ OPTIONS:
     goto -u|--unregister <alias>
   -l, --list: lists aliases
     goto -l|--list
+  -x, --expand: expands an alias
+    goto -x|--expand <alias>
   -c, --cleanup: cleans up non existent directory aliases
     goto -c|--cleanup
   -h, --help: prints this help
@@ -108,7 +113,24 @@ function _goto_list_aliases()
   fi
 }
 
-# Registers and alias.
+# Expands a registered alias.
+function _goto_expand_alias()
+{
+  if [ "$#" -ne "1" ]; then
+    _goto_error "usage: goto -x|--expand <alias>"
+    return
+  fi
+
+  local resolved=$(_goto_find_alias_directory $1)
+  if [ -z "$resolved" ]; then
+    _goto_error "alias '$1' does not exist"
+    return
+  fi
+
+  echo "$resolved"
+}
+
+# Registers an alias.
 function _goto_register_alias()
 {
   if [ "$#" -ne "2" ]; then
@@ -235,7 +257,7 @@ function _complete_goto_commands()
   local IFS=$' \t\n'
 
   # shellcheck disable=SC2207
-  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -c --cleanup -v --version" -- "$1"))
+  COMPREPLY=($(compgen -W "-r --register -u --unregister -l --list -x --expand -c --cleanup -v --version" -- "$1"))
 }
 
 # Completes the goto function with the available aliases

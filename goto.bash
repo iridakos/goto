@@ -309,7 +309,10 @@ function _complete_goto()
     prev="${COMP_WORDS[1]}"
 
     if [[ $prev = "-u" ]] || [[ $prev = "--unregister" ]]; then
-      # prompt with aliases only if user tries to unregister one
+      # prompt with aliases if user tries to unregister one
+      _complete_goto_aliases "$cur"
+    elif [[ $prev = "-x" ]] || [[ $prev = "--expand" ]]; then
+      # prompt with aliases if user tries to expand one
       _complete_goto_aliases "$cur"
     fi
   elif [ "$COMP_CWORD" -eq "3" ]; then

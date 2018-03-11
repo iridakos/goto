@@ -26,6 +26,7 @@
 function goto()
 {
   local target
+  readonly GOTO_DB="$HOME/.goto"
 
   if [ -z "$1" ]; then
     # display usage and exit when no args
@@ -101,8 +102,8 @@ function _goto_expand_directory()
 function _goto_list_aliases()
 {
   local IFS=$'\n'
-  if [ -f ~/.goto ]; then
-    sed '/^\s*$/d' ~/.goto 2>/dev/null
+  if [ -f "$GOTO_DB" ]; then
+    sed '/^\s*$/d' "$GOTO_DB" 2>/dev/null
   else
     echo "You haven't configured any directory aliases yet."
   fi
@@ -137,7 +138,7 @@ function _goto_register_alias()
   fi
 
   # Append entry to file.
-  echo "$1 $directory" >> ~/.goto
+  echo "$1 $directory" >> "$GOTO_DB"
   echo "Alias '$1' registered successfully."
 }
 
@@ -155,22 +156,23 @@ function _goto_unregister_alias
     _goto_error "alias '$1' does not exist"
     return
   fi
-
+	
+  local readonly GOTO_DB_TMP="$HOME/.goto_"
   # Delete entry from file.
-  sed "/^$1 /d" ~/.goto > ~/.goto_ && mv ~/.goto_ ~/.goto
+  sed "/^$1 /d" "$GOTO_DB" > "$GOTO_DB_TMP" && mv "$GOTO_DB_TMP" "$GOTO_DB"
   echo "Alias '$1' unregistered successfully."
 }
 
 # Unregisters aliases whose directories no longer exist.
 function _goto_cleanup()
 {
-  if ! [ -f ~/.goto ]; then
+  if ! [ -f "$GOTO_DB" ]; then
     return
   fi
 
   local IFS=$'\n' match matches al dir
 
-  read -d '' -r -a matches < ~/.goto
+  read -d '' -r -a matches < "$GOTO_DB"
 
   IFS=' '
   for i in "${!matches[@]}"; do
@@ -203,7 +205,7 @@ function _goto_find_alias_directory()
 {
   local resolved
 
-  resolved=$(sed -n "s/^$1 \\(.*\\)/\\1/p" ~/.goto 2>/dev/null)
+  resolved=$(sed -n "s/^$1 \\(.*\\)/\\1/p" "$GOTO_DB" 2>/dev/null)
   echo "$resolved"
 }
 
@@ -212,6 +214,17 @@ function _goto_find_alias_directory()
 function _goto_error()
 {
   (>&2 echo "goto error: $1")
+}
+
+function _goto_print_similar()
+{
+  local similar
+  
+  similar=$(sed -n "/^$1[^ ]* .*/p" "$GOTO_DB" 2>/dev/null)
+  if [ -n "$similar" ]; then
+    (>&2 echo "Did you mean:")
+    (>&2 echo "$similar" | column -t)
+  fi
 }
 
 # Fetches alias directory, errors if it doesn't exist.
@@ -223,6 +236,7 @@ function _goto_resolve_alias()
 
   if [ -z "$resolved" ]; then
     _goto_error "unregistered alias $1"
+    _goto_print_similar "$1"
     echo ""
   else
     echo "${resolved}"
@@ -244,7 +258,7 @@ function _complete_goto_aliases()
   local IFS=$'\n' matches al
 
   # shellcheck disable=SC2207
-  matches=($(sed -n "/^$1/p" ~/.goto 2>/dev/null))
+  matches=($(sed -n "/^$1/p" "$GOTO_DB" 2>/dev/null))
 
   if [ "${#matches[@]}" -eq "1" ]; then
     # remove the filenames attribute from the completion method

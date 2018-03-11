@@ -27,13 +27,11 @@ rubies /home/iridakos/.rvm/rubies
 ```
 
 ## Installation
-
-Copy the file `goto.bash` somewhere in your filesystem and add a line in your `.bashrc` to source it.
-
-For example, if you placed the file in your home folder, all you have to do is add the following line to your `.bashrc` file:
-
+Clone the repository and run the install script as super user or root
 ```bash
-source ~/goto.bash
+git clone https://github.com/iridakos/goto.git
+cd goto
+sudo ./install
 ```
 
 ## Usage

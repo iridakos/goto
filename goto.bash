@@ -26,7 +26,7 @@
 function goto()
 {
   local target
-  readonly GOTO_DB="$HOME/.goto"
+  GOTO_DB="$HOME/.goto"
 
   if [ -z "$1" ]; then
     # display usage and exit when no args
@@ -109,6 +109,12 @@ function _goto_list_aliases()
   fi
 }
 
+function _goto_find_duplicate()
+{
+  local duplicates=$(sed -n 's:[^ ]* '"$1"'$:&:p' "$GOTO_DB" 2>/dev/null)
+  echo "$duplicates"
+}
+
 # Registers and alias.
 function _goto_register_alias()
 {
@@ -137,9 +143,16 @@ function _goto_register_alias()
     return
   fi
 
+  local duplicate=$(_goto_find_duplicate "$directory")
+
   # Append entry to file.
   echo "$1 $directory" >> "$GOTO_DB"
   echo "Alias '$1' registered successfully."
+  
+  if [ -n "$duplicate" ]; then
+    echo -e "note: duplicate alias found:\n$duplicate"
+    return
+  fi
 }
 
 # Unregisters the given alias.

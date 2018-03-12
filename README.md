@@ -53,10 +53,33 @@ To change to an aliased directory, type:
 goto <alias>
 ```
 
+To first push the current directory onto the directory stack before changing directories, type:
+```bash
+goto -p <alias>
+```
+or
+```bash
+goto --push <alias>
+```
+
 #### Example:
 ```bash
 goto dev
 ```
+
+### Revert to a pushed directory
+To return to a pushed directory, type:
+```bash
+goto -o
+```
+or
+```bash
+goto --pop
+```
+
+#### Notes
+
+This command is equivalent to `popd`, but within the `goto` command.
 
 ### Register an alias
 To register a directory alias, type:

@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+# shellcheck disable=SC2039
 # MIT License
 #
 # Copyright (c) 2018 Lazarus Lazaridis
@@ -22,7 +24,7 @@
 
 # Changes to the given alias directory
 # or executes a command based on the arguments.
-function goto()
+goto()
 {
   local target
   _goto_resolve_db
@@ -61,12 +63,12 @@ function goto()
   return $?
 }
 
-function _goto_resolve_db()
+_goto_resolve_db()
 {
   GOTO_DB="$HOME/.goto"
 }
 
-function _goto_usage()
+_goto_usage()
 {
   cat <<\USAGE
 usage: goto [<option>] <alias> [<directory>]
@@ -91,20 +93,20 @@ USAGE
 }
 
 # Displays version
-function _goto_version()
+_goto_version()
 {
   echo "goto version 1.0.0"
 }
 
 # Expands directory.
 # Helpful for ~, ., .. paths
-function _goto_expand_directory()
+_goto_expand_directory()
 {
   cd "$1" 2>/dev/null && pwd
 }
 
 # Lists registered aliases.
-function _goto_list_aliases()
+_goto_list_aliases()
 {
   local IFS=$'\n'
   if [ -f "$GOTO_DB" ]; then
@@ -115,7 +117,7 @@ function _goto_list_aliases()
 }
 
 # Lists duplicate directory aliases
-function _goto_find_duplicate()
+_goto_find_duplicate()
 {
   local duplicates=
 
@@ -124,7 +126,7 @@ function _goto_find_duplicate()
 }
 
 # Registers and alias.
-function _goto_register_alias()
+_goto_register_alias()
 {
   if [ "$#" -ne "2" ]; then
     _goto_error "usage: goto -r|--register <alias> <directory>"
@@ -163,7 +165,7 @@ function _goto_register_alias()
 }
 
 # Unregisters the given alias.
-function _goto_unregister_alias
+_goto_unregister_alias()
 {
   if [ "$#" -ne "1" ]; then
     _goto_error "usage: goto -u|--unregister <alias>"
@@ -185,7 +187,7 @@ function _goto_unregister_alias
 }
 
 # Unregisters aliases whose directories no longer exist.
-function _goto_cleanup()
+_goto_cleanup()
 {
   if ! [ -f "$GOTO_DB" ]; then
     return
@@ -199,7 +201,7 @@ function _goto_cleanup()
 }
 
 # Changes to the given alias' directory
-function _goto_directory()
+_goto_directory()
 {
   local target
 
@@ -210,7 +212,7 @@ function _goto_directory()
 }
 
 # Fetches the alias directory.
-function _goto_find_alias_directory()
+_goto_find_alias_directory()
 {
   local resolved
 
@@ -220,20 +222,20 @@ function _goto_find_alias_directory()
 
 # Displays the given error.
 # Used for common error output.
-function _goto_error()
+_goto_error()
 {
   (>&2 echo -e "goto error: $1")
 }
 
 # Displays the given warning.
 # Used for common warning output.
-function _goto_warning()
+_goto_warning()
 {
   (>&2 echo -e "goto warning: $1")
 }
 
 # Displays entries with aliases starting as the given one.
-function _goto_print_similar()
+_goto_print_similar()
 {
   local similar
 
@@ -245,7 +247,7 @@ function _goto_print_similar()
 }
 
 # Fetches alias directory, errors if it doesn't exist.
-function _goto_resolve_alias()
+_goto_resolve_alias()
 {
   local resolved
 
@@ -261,7 +263,7 @@ function _goto_resolve_alias()
 }
 
 # Completes the goto function with the available commands
-function _complete_goto_commands()
+_complete_goto_commands()
 {
   local IFS=$' \t\n'
 
@@ -270,7 +272,7 @@ function _complete_goto_commands()
 }
 
 # Completes the goto function with the available aliases
-function _complete_goto_aliases()
+_complete_goto_aliases()
 {
   local IFS=$'\n' matches
   _goto_resolve_db
@@ -301,7 +303,7 @@ function _complete_goto_aliases()
 }
 
 # Bash programmable completion for the goto function
-function _complete_goto_bash()
+_complete_goto_bash()
 {
   local cur="${COMP_WORDS[$COMP_CWORD]}" prev
 
@@ -337,7 +339,7 @@ function _complete_goto_bash()
 }
 
 # Zsh programmable completion for the goto function
-function _complete_goto_zsh()
+_complete_goto_zsh()
 {
   local all_aliases=()
   while IFS= read -r line; do

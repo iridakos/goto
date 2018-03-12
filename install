@@ -50,7 +50,7 @@ if [ -n "$RC" ]; then
 	# Append source to RC startup file if not already there
 	if [ "$(grep -c "source $GOTO_FILE_LOCATION" "$RC")" == "0" ]; then
 		# Append source to RC file
-		echo -e "\\n#Source goto\\nsource $GOTO_FILE_LOCATION\\n" >> "$RC"
+		echo -e "\\n\\n# Source goto\\n[[ -s \"$GOTO_FILE_LOCATION\" ]] && source $GOTO_FILE_LOCATION\\n" >> "$RC"
 	fi
 
 	# shellcheck source=/dev/null

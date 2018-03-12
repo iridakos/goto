@@ -148,15 +148,13 @@ function _goto_register_alias()
 
   local duplicate
   duplicate=$(_goto_find_duplicate "$directory")
+  if [ -n "$duplicate" ]; then
+    _goto_warning "duplicate alias(es) found: \\n$duplicate"
+  fi
 
   # Append entry to file.
   echo "$1 $directory" >> "$GOTO_DB"
   echo "Alias '$1' registered successfully."
-  
-  if [ -n "$duplicate" ]; then
-    echo -e "note: duplicate alias found:\n$duplicate"
-    return
-  fi
 }
 
 # Unregisters the given alias.

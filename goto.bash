@@ -233,6 +233,13 @@ function _goto_error()
   (>&2 echo -e "goto error: $1")
 }
 
+# Displays the given warning.
+# Used for common warning output.
+function _goto_warning()
+{
+  (>&2 echo -e "goto warning: $1")
+}
+
 function _goto_print_similar()
 {
   local similar

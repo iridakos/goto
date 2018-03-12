@@ -120,6 +120,26 @@ or
 goto --list
 ```
 
+### Expand an alias
+
+To expand an alias to its value, use:
+```bash
+goto -x <alias>
+```
+or
+```bash
+goto --expand <alias>
+```
+
+#### Example
+```bash
+goto -x last_release
+```
+or
+```bash
+goto --expand last_release
+```
+
 ### Cleanup
 
 To cleanup the aliases from directories that are no longer accessible in your filesystem, use:

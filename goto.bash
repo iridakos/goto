@@ -111,7 +111,9 @@ function _goto_list_aliases()
 
 function _goto_find_duplicate()
 {
-  local duplicates=$(sed -n 's:[^ ]* '"$1"'$:&:p' "$GOTO_DB" 2>/dev/null)
+  local duplicates=
+
+  duplicates=$(sed -n 's:[^ ]* '"$1"'$:&:p' "$GOTO_DB" 2>/dev/null)
   echo "$duplicates"
 }
 
@@ -143,7 +145,8 @@ function _goto_register_alias()
     return
   fi
 
-  local duplicate=$(_goto_find_duplicate "$directory")
+  local duplicate
+  duplicate=$(_goto_find_duplicate "$directory")
 
   # Append entry to file.
   echo "$1 $directory" >> "$GOTO_DB"
@@ -169,7 +172,8 @@ function _goto_unregister_alias
     _goto_error "alias '$1' does not exist"
     return
   fi
-	
+
+  # shellcheck disable=SC2034
   local readonly GOTO_DB_TMP="$HOME/.goto_"
   # Delete entry from file.
   sed "/^$1 /d" "$GOTO_DB" > "$GOTO_DB_TMP" && mv "$GOTO_DB_TMP" "$GOTO_DB"

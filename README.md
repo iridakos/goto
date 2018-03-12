@@ -49,9 +49,17 @@ source ~/goto.sh
 
 ## Usage
 
-### Outline
-
 * [Change to an aliased directory](#change-to-an-aliased-directory)
+* [Register an alias](#register-an-alias)
+* [Unregister an alias](#unregister-an-alias)
+* [List aliases](#list-aliases)
+* [Expand an alias](#expand-an-alias)
+* [Cleanup](#cleanup)
+* [Help](#help)
+* [Version](#version)
+* [Extras](#extras)
+  * [Push before changing directories](#push-before-changing-directories)
+  * [Revert to a pushed directory](#revert-to-a-pushed-directory)
 
 ### Change to an aliased directory
 To change to an aliased directory, type:

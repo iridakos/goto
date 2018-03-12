@@ -109,6 +109,7 @@ function _goto_list_aliases()
   fi
 }
 
+# Lists duplicate directory aliases
 function _goto_find_duplicate()
 {
   local duplicates=
@@ -240,10 +241,11 @@ function _goto_warning()
   (>&2 echo -e "goto warning: $1")
 }
 
+# Displays entries with aliases starting as the given one.
 function _goto_print_similar()
 {
   local similar
-  
+
   similar=$(sed -n "/^$1[^ ]* .*/p" "$GOTO_DB" 2>/dev/null)
   if [ -n "$similar" ]; then
     (>&2 echo "Did you mean:")

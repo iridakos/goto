@@ -1,6 +1,6 @@
 # goto
 
-`goto` is a bash utility allowing users to change faster to aliased directories supporting auto-completion :feet:
+`goto` is a shell utility allowing users to change faster to aliased directories supporting auto-completion :feet:
 
 ## How does it work?
 
@@ -17,7 +17,7 @@ goto dev
 
 ## goto completion
 
-`goto` comes with a nice auto-completion script so that whenever you press the `tab` key after the `goto` command, bash prompts with suggestions of the available aliases:
+`goto` comes with a nice auto-completion script so that whenever you press the `tab` key after the `goto` command, bash or zsh prompts with suggestions of the available aliases:
 
 ```bash
 $ goto <tab>
@@ -27,11 +27,22 @@ rubies /home/iridakos/.rvm/rubies
 ```
 
 ## Installation
-Clone the repository and run the install script as super user or root
+
+### Via script
+Clone the repository and run the install script as super user or root:
 ```bash
 git clone https://github.com/iridakos/goto.git
 cd goto
 sudo ./install
+```
+
+### Manually
+Copy the file `goto.sh` somewhere in your filesystem and add a line in your `.zshrc` or `.bashrc` to source it.
+
+For example, if you placed the file in your home folder, all you have to do is add the following line to your `.zshrc` or `.bashrc` file:
+
+```bash
+source ~/goto.sh
 ```
 
 ## Usage
@@ -73,7 +84,7 @@ goto --register blog /mnt/external/projects/html/blog
 goto -r last_release .
 ```
 and it will automatically be aliased to the whole path.
-* Pressing the `tab` key after the alias name, you have the default directory suggestions by bash.
+* Pressing the `tab` key after the alias name, you have the default directory suggestions by the shell.
 
 ### Unregister an alias
 
@@ -146,7 +157,6 @@ goto --version
 ## TODO
 
 * ~~Test on macOS~~ extensively
-* Fix `zsh` issues [[#7](https://github.com/iridakos/goto/issues/7), ...]
 * Write [tests](https://github.com/iridakos/goto/issues/2)
 
 ## Contributing

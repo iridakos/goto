@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # MIT License
 #
 # Copyright (c) 2018 Lazarus Lazaridis
@@ -59,6 +58,7 @@ function goto()
       _goto_directory "$subcommand"
       ;;
   esac
+  return $?
 }
 
 function _goto_usage()
@@ -123,12 +123,12 @@ function _goto_register_alias()
 {
   if [ "$#" -ne "2" ]; then
     _goto_error "usage: goto -r|--register <alias> <directory>"
-    return
+    return 1
   fi
 
   if ! [[ $1 =~ ^[[:alnum:]]+[a-zA-Z0-9_-]*$ ]]; then
     _goto_error "invalid alias - can start with letters or digits followed by letters, digits, hyphens or underscores"
-    return
+    return 1
   fi
 
   local resolved
@@ -136,14 +136,14 @@ function _goto_register_alias()
 
   if [ -n "$resolved" ]; then
     _goto_error "alias '$1' exists"
-    return
+    return 1
   fi
 
   local directory
   directory=$(_goto_expand_directory "$2")
   if [ -z "$directory" ]; then
     _goto_error "failed to register '$1' to '$2' - can't cd to directory"
-    return
+    return 1
   fi
 
   local duplicate
@@ -162,14 +162,14 @@ function _goto_unregister_alias
 {
   if [ "$#" -ne "1" ]; then
     _goto_error "usage: goto -u|--unregister <alias>"
-    return
+    return 1
   fi
 
   local resolved
   resolved=$(_goto_find_alias_directory "$1")
   if [ -z "$resolved" ]; then
     _goto_error "alias '$1' does not exist"
-    return
+    return 1
   fi
 
   # shellcheck disable=SC2034
@@ -186,22 +186,11 @@ function _goto_cleanup()
     return
   fi
 
-  local IFS=$'\n' match matches al dir
-
-  read -d '' -r -a matches < "$GOTO_DB"
-
-  IFS=' '
-  for i in "${!matches[@]}"; do
-    read -r -a match <<< "${matches[$i]}"
-
-    al="${match[0]}"
-    dir="${match[*]:1}"
-
-    if [ -n "$al" ] && [ ! -d "$dir" ]; then
-      echo "Cleaning up: $al - $dir"
-      _goto_unregister_alias "$al"
-    fi
-  done
+  while IFS= read -r i && [ -n "$i" ]; do
+    echo "Cleaning up: $i"
+    _goto_unregister_alias "$i"
+  done <<< "$(awk '{al=$1; $1=""; dir=substr($0,2);
+                    system("[ ! -d \"" dir "\" ] && echo " al)}' "$GOTO_DB")"
 }
 
 # Changes to the given alias' directory
@@ -209,11 +198,10 @@ function _goto_directory()
 {
   local target
 
-  target=$(_goto_resolve_alias "$1")
+  target=$(_goto_resolve_alias "$1") || return 1
 
-  if [ -n "$target" ]; then
-    cd "$target" || _goto_error "Failed to goto '$target'"
-  fi
+  cd "$target" 2> /dev/null || \
+    { _goto_error "Failed to goto '$target'" && return 1; }
 }
 
 # Fetches the alias directory.
@@ -261,7 +249,7 @@ function _goto_resolve_alias()
   if [ -z "$resolved" ]; then
     _goto_error "unregistered alias $1"
     _goto_print_similar "$1"
-    echo ""
+    return 1
   else
     echo "${resolved}"
   fi
@@ -279,7 +267,7 @@ function _complete_goto_commands()
 # Completes the goto function with the available aliases
 function _complete_goto_aliases()
 {
-  local IFS=$'\n' matches al
+  local IFS=$'\n' matches
 
   # shellcheck disable=SC2207
   matches=($(sed -n "/^$1/p" "$GOTO_DB" 2>/dev/null))
@@ -307,7 +295,7 @@ function _complete_goto_aliases()
 }
 
 # Bash programmable completion for the goto function
-function _complete_goto()
+function _complete_goto_bash()
 {
   local cur="${COMP_WORDS[$COMP_CWORD]}" prev
 
@@ -342,9 +330,51 @@ function _complete_goto()
   fi
 }
 
-# Register the goto compspec
-if ! [[ $(uname -s) =~ Darwin* ]]; then
-  complete -o filenames -F _complete_goto goto
+# Zsh programmable completion for the goto function
+function _complete_goto_zsh()
+{
+  local all_aliases=()
+  while IFS= read -r line; do
+    all_aliases+=("$line")
+  done <<< "$(sed -e 's/ /:/g' ~/.goto 2>/dev/null)"
+
+  local state
+  local -a options=(
+    '(1)'{-r,--register}'[registers an alias]:register:->register'
+    '(- 1 2)'{-u,--unregister}'[unregisters an alias]:unregister:->unregister'
+    '(: -)'{-l,--list}'[lists aliases]'
+    '(*)'{-c,--cleanup}'[cleans up non existent directory aliases]'
+    '(: -)'{-h,--help}'[prints this help]'
+    '(* -)'{-v,--version}'[displays the version of the goto script]'
+  )
+
+  _arguments -C \
+    "${options[@]}" \
+    '1:alias:->aliases' \
+    '2:dir:_files' \
+  && ret=0
+
+  case ${state} in
+    (aliases)
+      _describe -t aliases 'goto aliases:' all_aliases && ret=0
+    ;;
+    (unregister)
+      _describe -t aliases 'unregister alias:' all_aliases && ret=0
+    ;;
+  esac
+  return $ret
+}
+
+# Register the goto completions.
+if [ -n "${BASH_VERSION}" ]; then
+  if ! [[ $(uname -s) =~ Darwin* ]]; then
+    complete -o filenames -F _complete_goto_bash goto
+  else
+    complete -F _complete_goto_bash goto
+  fi
+elif [ -n "${ZSH_VERSION}" ]; then
+  compdef _complete_goto_zsh goto
 else
-  complete -F _complete_goto goto
+  echo "Unsupported shell."
+  exit 1
 fi

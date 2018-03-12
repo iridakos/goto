@@ -26,37 +26,36 @@ function _goto_install_error()
 	echo "$@" >&2
 }
 
-	# sudo-check
-	if [ $EUID -ne 0 ]; then
-		_goto_install_error 'Please run this script in sudo mode or as root user'
-		exit
-	fi
-	
-	GOTO_FILE_LOCATION='/usr/local/share/goto.bash'
-	RC=""
-	if [ -f ~/.bashrc ]; then
-		RC="$HOME/.bashrc"
-	elif [ -f ~/.cshrc ]; then
-		RC="$HOME/.cshrc"
-	elif [ -f ~/.kshrc ]; then
-		RC="$HOME/.kshrc"
-	elif [ -f ~/.zshrc ]; then
-		RC="$HOME/.zshrc"
-	fi
-	
-	cp ./goto.bash "$GOTO_FILE_LOCATION"
-	
-	if [ -n "$RC" ]; then
-		# Append source to RC startup file if not already there
-		if [ "$(grep -c "source $GOTO_FILE_LOCATION" "$RC")" == "0" ]; then
-			# Append source to RC file
-			echo -e "\\n#Source goto\\nsource $GOTO_FILE_LOCATION\\n" >> "$RC"
-		fi
+# sudo-check
+if [ $EUID -ne 0 ]; then
+	_goto_install_error 'Please run this script in sudo mode or as root user'
+	exit
+fi
 
-		# shellcheck source=/dev/null
-		source "$GOTO_FILE_LOCATION"
-	else
-		_goto_install_error "Error sourcing goto in your startup file.."
-		_goto_install_error "E.g ~/.bashrc ~/.cshrc etc.."
+GOTO_FILE_LOCATION='/usr/local/share/goto.bash'
+RC=""
+if [ -f ~/.bashrc ]; then
+	RC="$HOME/.bashrc"
+elif [ -f ~/.cshrc ]; then
+	RC="$HOME/.cshrc"
+elif [ -f ~/.kshrc ]; then
+	RC="$HOME/.kshrc"
+elif [ -f ~/.zshrc ]; then
+	RC="$HOME/.zshrc"
+fi
+
+cp ./goto.bash "$GOTO_FILE_LOCATION"
+
+if [ -n "$RC" ]; then
+	# Append source to RC startup file if not already there
+	if [ "$(grep -c "source $GOTO_FILE_LOCATION" "$RC")" == "0" ]; then
+		# Append source to RC file
+		echo -e "\\n#Source goto\\nsource $GOTO_FILE_LOCATION\\n" >> "$RC"
 	fi
 
+	# shellcheck source=/dev/null
+	source "$GOTO_FILE_LOCATION"
+else
+	_goto_install_error "Error sourcing goto in your startup file.."
+	_goto_install_error "E.g ~/.bashrc ~/.cshrc etc.."
+fi

@@ -25,7 +25,7 @@
 function goto()
 {
   local target
-  GOTO_DB="$HOME/.goto"
+  _goto_resolve_db
 
   if [ -z "$1" ]; then
     # display usage and exit when no args
@@ -59,6 +59,11 @@ function goto()
       ;;
   esac
   return $?
+}
+
+function _goto_resolve_db()
+{
+  GOTO_DB="$HOME/.goto"
 }
 
 function _goto_usage()
@@ -268,6 +273,7 @@ function _complete_goto_commands()
 function _complete_goto_aliases()
 {
   local IFS=$'\n' matches
+  _goto_resolve_db
 
   # shellcheck disable=SC2207
   matches=($(sed -n "/^$1/p" "$GOTO_DB" 2>/dev/null))

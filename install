@@ -32,7 +32,7 @@ if [ $EUID -ne 0 ]; then
 	exit
 fi
 
-GOTO_FILE_LOCATION='/usr/local/share/goto.bash'
+GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
 RC=""
 if [ -f ~/.bashrc ]; then
 	RC="$HOME/.bashrc"
@@ -44,7 +44,7 @@ elif [ -f ~/.zshrc ]; then
 	RC="$HOME/.zshrc"
 fi
 
-cp ./goto.bash "$GOTO_FILE_LOCATION"
+cp ./goto.sh "$GOTO_FILE_LOCATION"
 
 if [ -n "$RC" ]; then
 	# Append source to RC startup file if not already there

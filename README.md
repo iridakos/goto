@@ -49,6 +49,10 @@ source ~/goto.sh
 
 ## Usage
 
+### Outline
+
+* [Change to an aliased directory](#change-to-an-aliased-directory)
+
 ### Change to an aliased directory
 To change to an aliased directory, type:
 ```bash

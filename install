@@ -27,10 +27,12 @@ function _goto_install_error()
 	
 	if [ -n "$RC" ]; then
 		# Append source to RC startup file if not already there
-		if [ `grep -c "source $GOTO_FILE_LOCATION" "$RC"` == "0" ]; then
+		if [ "$(grep -c "source $GOTO_FILE_LOCATION" "$RC")" == "0" ]; then
 			# Append source to RC file
-			echo -e "\n#Source goto\nsource $GOTO_FILE_LOCATION\n" >> "$RC"
+			echo -e "\\n#Source goto\\nsource $GOTO_FILE_LOCATION\\n" >> "$RC"
 		fi
+
+		# shellcheck source=/dev/null
 		source "$GOTO_FILE_LOCATION"
 	else
 		_goto_install_error "Error sourcing goto in your startup file.."

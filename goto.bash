@@ -230,7 +230,7 @@ function _goto_find_alias_directory()
 # Used for common error output.
 function _goto_error()
 {
-  (>&2 echo "goto error: $1")
+  (>&2 echo -e "goto error: $1")
 }
 
 function _goto_print_similar()

@@ -221,22 +221,22 @@ _goto_unregister_alias()
 }
 
 # Pushes the current directory onto the stack, then goto
-function _goto_directory_push()
+_goto_directory_push()
 {
   if [ "$#" -ne "1" ]; then
     _goto_error "usage: goto -p|--push <alias>"
     return
   fi
 
-  pushd . 2>&1 1>/dev/null
+  { pushd . || return; } 1>/dev/null 2>&1
 
-  _goto_directory $@
+  _goto_directory "$@"
 }
 
 # Pops the top directory from the stack, then goto
-function _goto_directory_pop()
+_goto_directory_pop()
 {
-  popd 2>&1 1>/dev/null
+  { popd || return; } 1>/dev/null 2>&1
 }
 
 # Unregisters aliases whose directories no longer exist.

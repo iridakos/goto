@@ -25,6 +25,7 @@
 function goto()
 {
   local target
+  GOTO_DB="$HOME/.goto"
 
   if [ -z "$1" ]; then
     # display usage and exit when no args
@@ -101,11 +102,20 @@ function _goto_expand_directory()
 function _goto_list_aliases()
 {
   local IFS=$'\n'
-  if [ -f ~/.goto ]; then
-    sed '/^\s*$/d' ~/.goto 2>/dev/null
+  if [ -f "$GOTO_DB" ]; then
+    sed '/^\s*$/d' "$GOTO_DB" 2>/dev/null
   else
     echo "You haven't configured any directory aliases yet."
   fi
+}
+
+# Lists duplicate directory aliases
+function _goto_find_duplicate()
+{
+  local duplicates=
+
+  duplicates=$(sed -n 's:[^ ]* '"$1"'$:&:p' "$GOTO_DB" 2>/dev/null)
+  echo "$duplicates"
 }
 
 # Registers and alias.
@@ -136,8 +146,14 @@ function _goto_register_alias()
     return 1
   fi
 
+  local duplicate
+  duplicate=$(_goto_find_duplicate "$directory")
+  if [ -n "$duplicate" ]; then
+    _goto_warning "duplicate alias(es) found: \\n$duplicate"
+  fi
+
   # Append entry to file.
-  echo "$1 $directory" >> ~/.goto
+  echo "$1 $directory" >> "$GOTO_DB"
   echo "Alias '$1' registered successfully."
 }
 
@@ -156,15 +172,17 @@ function _goto_unregister_alias
     return 1
   fi
 
+  # shellcheck disable=SC2034
+  local readonly GOTO_DB_TMP="$HOME/.goto_"
   # Delete entry from file.
-  sed "/^$1 /d" ~/.goto > ~/.goto_ && mv ~/.goto_ ~/.goto
+  sed "/^$1 /d" "$GOTO_DB" > "$GOTO_DB_TMP" && mv "$GOTO_DB_TMP" "$GOTO_DB"
   echo "Alias '$1' unregistered successfully."
 }
 
 # Unregisters aliases whose directories no longer exist.
 function _goto_cleanup()
 {
-  if [ ! -f ~/.goto ]; then
+  if ! [ -f "$GOTO_DB" ]; then
     return
   fi
 
@@ -172,7 +190,7 @@ function _goto_cleanup()
     echo "Cleaning up: $i"
     _goto_unregister_alias "$i"
   done <<< "$(awk '{al=$1; $1=""; dir=substr($0,2);
-                    system("[ ! -d \"" dir "\" ] && echo " al)}' ~/.goto)"
+                    system("[ ! -d \"" dir "\" ] && echo " al)}' "$GOTO_DB")"
 }
 
 # Changes to the given alias' directory
@@ -191,7 +209,7 @@ function _goto_find_alias_directory()
 {
   local resolved
 
-  resolved=$(sed -n "s/^$1 \\(.*\\)/\\1/p" ~/.goto 2>/dev/null)
+  resolved=$(sed -n "s/^$1 \\(.*\\)/\\1/p" "$GOTO_DB" 2>/dev/null)
   echo "$resolved"
 }
 
@@ -199,7 +217,26 @@ function _goto_find_alias_directory()
 # Used for common error output.
 function _goto_error()
 {
-  (>&2 echo "goto error: $1")
+  (>&2 echo -e "goto error: $1")
+}
+
+# Displays the given warning.
+# Used for common warning output.
+function _goto_warning()
+{
+  (>&2 echo -e "goto warning: $1")
+}
+
+# Displays entries with aliases starting as the given one.
+function _goto_print_similar()
+{
+  local similar
+
+  similar=$(sed -n "/^$1[^ ]* .*/p" "$GOTO_DB" 2>/dev/null)
+  if [ -n "$similar" ]; then
+    (>&2 echo "Did you mean:")
+    (>&2 echo "$similar" | column -t)
+  fi
 }
 
 # Fetches alias directory, errors if it doesn't exist.
@@ -211,6 +248,7 @@ function _goto_resolve_alias()
 
   if [ -z "$resolved" ]; then
     _goto_error "unregistered alias $1"
+    _goto_print_similar "$1"
     return 1
   else
     echo "${resolved}"
@@ -232,7 +270,7 @@ function _complete_goto_aliases()
   local IFS=$'\n' matches
 
   # shellcheck disable=SC2207
-  matches=($(sed -n "/^$1/p" ~/.goto 2>/dev/null))
+  matches=($(sed -n "/^$1/p" "$GOTO_DB" 2>/dev/null))
 
   if [ "${#matches[@]}" -eq "1" ]; then
     # remove the filenames attribute from the completion method

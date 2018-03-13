@@ -1,4 +1,4 @@
-# <img align="right" src="https://raw.githubusercontent.com/iridakos/goto/master/doc/goto-logo-40.png"> goto
+# goto
 
 A shell utility allowing users to change to aliased directories supporting auto-completion :feet:
 

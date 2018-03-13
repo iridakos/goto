@@ -2,7 +2,7 @@
 
 A shell utility allowing users to change to aliased directories supporting auto-completion :feet:
 
-![Generic badge](https://img.shields.io/badge/version-1.2.0-green.svg)
+![Generic badge](https://img.shields.io/badge/version-1.2.1-green.svg)
 
 ## How does it work?
 

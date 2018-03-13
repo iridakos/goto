@@ -74,7 +74,7 @@ goto()
 
 _goto_resolve_db()
 {
-  GOTO_DB="$HOME/.goto"
+  GOTO_DB="${GOTO_DB:-$HOME/.goto}"
 }
 
 _goto_usage()

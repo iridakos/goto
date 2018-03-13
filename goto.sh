@@ -411,6 +411,9 @@ _complete_goto_zsh()
     '(- 1 2)'{-u,--unregister}'[unregisters an alias]:unregister:->unregister'
     '(: -)'{-l,--list}'[lists aliases]'
     '(*)'{-c,--cleanup}'[cleans up non existent directory aliases]'
+    '(1 2)'{-x,--expand}'[expands an alias]:expand:->aliases'
+    '(1 2)'{-p,--push}'[pushes the current directory onto the stack, then performs goto]:push:->aliases'
+    '(*)'{-o,--pop}'[pops the top directory from stack, then changes to that directory]'
     '(: -)'{-h,--help}'[prints this help]'
     '(* -)'{-v,--version}'[displays the version of the goto script]'
   )

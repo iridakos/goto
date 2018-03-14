@@ -5,6 +5,15 @@ All notable changes to `goto` will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - 2018-03-14
+
+### Added
+- align columns when displaying the list of aliases or similar results
+
+### Changed
+- removed shebang since the script is sourced
+- updated README with valid information on supported shells
+
 ## [1.2.2] - 2018-03-13
 
 ### Added

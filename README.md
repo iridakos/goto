@@ -1,8 +1,8 @@
 # goto
 
-A shell utility allowing users to change to aliased directories supporting auto-completion :feet:
+A shell utility allowing users to navigate to aliased directories supporting auto-completion :feet:
 
-![Generic badge](https://img.shields.io/badge/version-1.2.2-green.svg)
+![Generic badge](https://img.shields.io/badge/version-1.2.3-green.svg)
 
 ## How does it work?
 

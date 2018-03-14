@@ -36,10 +36,8 @@ GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
 RC=""
 if [ -f ~/.bashrc ]; then
 	RC="$HOME/.bashrc"
-elif [ -f ~/.cshrc ]; then
-	RC="$HOME/.cshrc"
-elif [ -f ~/.kshrc ]; then
-	RC="$HOME/.kshrc"
+#elif [ -f ~/.kshrc ]; then
+#	RC="$HOME/.kshrc"
 elif [ -f ~/.zshrc ]; then
 	RC="$HOME/.zshrc"
 fi
@@ -57,5 +55,5 @@ if [ -n "$RC" ]; then
 	source "$GOTO_FILE_LOCATION"
 else
 	_goto_install_error "Error sourcing goto in your startup file.."
-	_goto_install_error "E.g ~/.bashrc ~/.cshrc etc.."
+	_goto_install_error "E.g ~/.bashrc ~/.zshrc etc.."
 fi

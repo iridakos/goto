@@ -125,7 +125,7 @@ _goto_list_aliases()
 {
   local IFS=$'\n'
   if [ -f "$GOTO_DB" ]; then
-    sed '/^\s*$/d' "$GOTO_DB" 2>/dev/null
+    column -t "$GOTO_DB" 2>/dev/null
   else
     echo "You haven't configured any directory aliases yet."
   fi
@@ -295,7 +295,7 @@ _goto_print_similar()
   similar=$(sed -n "/^$1[^ ]* .*/p" "$GOTO_DB" 2>/dev/null)
   if [ -n "$similar" ]; then
     (>&2 echo "Did you mean:")
-    (>&2 echo "$similar" | column -t)
+    (>&2 column -t <<< "$similar")
   fi
 }
 

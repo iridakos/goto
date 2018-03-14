@@ -60,6 +60,9 @@ source ~/goto.sh
 * [Extras](#extras)
   * [Push before changing directories](#push-before-changing-directories)
   * [Revert to a pushed directory](#revert-to-a-pushed-directory)
+* [Troubleshooting](#troubleshooting)
+  * [zsh](#zsh)
+    * [command not found compdef](#command-not-found-compdef)
 
 ### Change to an aliased directory
 To change to an aliased directory, type:
@@ -214,6 +217,18 @@ goto --pop
 #### Notes
 
 This command is equivalent to `popd`, but within the `goto` command.
+
+## Troubleshooting
+
+### zsh
+
+#### command not found: compdef
+
+In case you get such an error, you need to load the `bashcompinit`. Append this to your `.zshrc` file:
+```bash
+autoload bashcompinit
+bashcompinit
+```
 
 ## TODO
 

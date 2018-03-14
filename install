@@ -36,8 +36,6 @@ GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
 RC=""
 if [ -f ~/.bashrc ]; then
 	RC="$HOME/.bashrc"
-#elif [ -f ~/.kshrc ]; then
-#	RC="$HOME/.kshrc"
 elif [ -f ~/.zshrc ]; then
 	RC="$HOME/.zshrc"
 fi

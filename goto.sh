@@ -353,6 +353,7 @@ _complete_goto_aliases()
       fi
     done
   fi
+  IFS=$'\n' COMPREPLY=($(printf "%s\n" "${COMPREPLY[@]}" | column -t))
 }
 
 # Bash programmable completion for the goto function

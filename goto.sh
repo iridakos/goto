@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+# shellcheck shell=bash
 # shellcheck disable=SC2039
 # MIT License
 #

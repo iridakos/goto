@@ -47,6 +47,10 @@ For example, if you placed the file in your home folder, all you have to do is a
 source ~/goto.sh
 ```
 
+### macOS - Homebrew
+
+A formula is on its way and will be available when this [pull request](https://github.com/Homebrew/homebrew-core/pull/25281) gets merged. Watch issue #9 for updates.
+
 ## Usage
 
 * [Change to an aliased directory](#change-to-an-aliased-directory)

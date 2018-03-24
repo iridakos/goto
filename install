@@ -32,6 +32,7 @@ if [ $EUID -ne 0 ]; then
 	exit
 fi
 
+HOME=$(eval echo ~${SUDO_USER})
 GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
 RC=""
 if [ -f ~/.bashrc ]; then

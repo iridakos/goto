@@ -49,10 +49,12 @@ source ~/goto.sh
 
 ### macOS - Homebrew
 
-A formula named `goto` is available for the bash shell in macOS. 
+A formula named `goto` is available for the bash shell in macOS.
 ```bash
 brew install goto
 ```
+
+**Note:** you need to restart your shell after installation.
 
 ## Usage
 

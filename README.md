@@ -54,7 +54,10 @@ A formula named `goto` is available for the bash shell in macOS.
 brew install goto
 ```
 
-**Note:** you need to restart your shell after installation.
+**Note:**
+- you need to restart your shell after installation
+- you need to have the bash completion feature enabled for bash in macOS (see this [issue](https://github.com/iridakos/goto/issues/36)):
+ - you can install it with `brew install bash-completion` in case you don't have it already
 
 ## Usage
 

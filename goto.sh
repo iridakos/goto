@@ -123,9 +123,11 @@ _goto_expand_directory()
 # Lists registered aliases.
 _goto_list_aliases()
 {
-  local IFS=$'\n'
+  local IFS=$' '
   if [ -f "$GOTO_DB" ]; then
-    column -t "$GOTO_DB" 2>/dev/null
+    while read -r name directory; do
+      printf '\e[1;36m%20s  \e[0m%s\n' "$name" "$directory"
+    done < "$GOTO_DB"
   else
     echo "You haven't configured any directory aliases yet."
   fi

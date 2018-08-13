@@ -75,6 +75,7 @@ goto()
 _goto_resolve_db()
 {
   GOTO_DB="${GOTO_DB:-$HOME/.goto}"
+  touch -a "$GOTO_DB"
 }
 
 _goto_usage()

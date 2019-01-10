@@ -259,3 +259,5 @@ bashcompinit
 ## License
 
 This tool is open source under the [MIT License](https://opensource.org/licenses/MIT) terms.
+
+[[Back To Top]](#goto)

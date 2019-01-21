@@ -26,10 +26,8 @@ function _goto_install_error()
 	echo "$@" >&2
 }
 
-# sudo-check
-if [ $EUID -ne 0 ]; then
-	_goto_install_error 'Please run this script in sudo mode or as root user'
-	exit
+if [ "$(whoami)" != "root" ]; then
+	SUDO=sudo
 fi
 
 HOME=$(eval echo "~${SUDO_USER}")
@@ -41,7 +39,7 @@ elif [ -f ~/.zshrc ]; then
 	RC="$HOME/.zshrc"
 fi
 
-cp ./goto.sh "$GOTO_FILE_LOCATION"
+${SUDO} cp ./goto.sh "$GOTO_FILE_LOCATION"
 
 if [ -n "$RC" ]; then
 	# Append source to RC startup file if not already there

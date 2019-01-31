@@ -33,9 +33,14 @@ if [[ "$OSTYPE" == "msys" ]]; then
 fi
 
 # sudo-check
-if [ $EUID -ne 0 ] && [ "$ON_WINDOWS" == false ]; then
-	_goto_install_error 'Please run this script in sudo mode or as root user'
-	exit
+if [ "$(whoami)" != "root" ]; then
+	SUDO=sudo
+fi
+
+#windows check
+ON_WINDOWS=false
+if [[ "$OSTYPE" == "msys" ]]; then
+	ON_WINDOWS=true
 fi
 
 HOME=$(eval echo "~${SUDO_USER}")
@@ -44,7 +49,6 @@ if [[ $ON_WINDOWS = true ]]; then
 else
 	GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
 fi
-
 RC=""
 if [ -f ~/.bashrc ]; then
 	RC="$HOME/.bashrc"
@@ -52,7 +56,7 @@ elif [ -f ~/.zshrc ]; then
 	RC="$HOME/.zshrc"
 fi
 
-cp ./goto.sh "$GOTO_FILE_LOCATION"
+${SUDO} cp ./goto.sh "$GOTO_FILE_LOCATION"
 
 if [ -n "$RC" ]; then
 	# Append source to RC startup file if not already there

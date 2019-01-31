@@ -26,14 +26,25 @@ function _goto_install_error()
 	echo "$@" >&2
 }
 
+#windows check
+ON_WINDOWS=false
+if [[ "$OSTYPE" == "msys" ]]; then
+	ON_WINDOWS=true
+fi
+
 # sudo-check
-if [ $EUID -ne 0 ]; then
+if [ $EUID -ne 0 ] && [ "$ON_WINDOWS" == false ]; then
 	_goto_install_error 'Please run this script in sudo mode or as root user'
 	exit
 fi
 
 HOME=$(eval echo "~${SUDO_USER}")
-GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
+if [[ $ON_WINDOWS = true ]]; then
+	GOTO_FILE_LOCATION='/usr/bin/goto.sh'
+else
+	GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
+fi
+
 RC=""
 if [ -f ~/.bashrc ]; then
 	RC="$HOME/.bashrc"

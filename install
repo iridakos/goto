@@ -26,6 +26,7 @@ function _goto_install_error()
 	echo "$@" >&2
 }
 
+# sudo-check
 if [ "$(whoami)" != "root" ]; then
 	SUDO=sudo
 fi

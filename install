@@ -33,7 +33,7 @@ if [[ "$OSTYPE" == "msys" ]]; then
 fi
 
 # sudo-check
-if [ "$(whoami)" != "root" ]; then
+iif [ $EUID -ne 0 ] && [ "$ON_WINDOWS" == false ]; then
 	SUDO=sudo
 fi
 

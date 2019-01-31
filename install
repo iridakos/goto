@@ -30,8 +30,18 @@ if [ "$(whoami)" != "root" ]; then
 	SUDO=sudo
 fi
 
+#windows check
+ON_WINDOWS=false
+if [[ "$OSTYPE" == "msys" ]]; then
+	ON_WINDOWS=true
+fi
+
 HOME=$(eval echo "~${SUDO_USER}")
-GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
+if [[ $ON_WINDOWS = true ]]; then
+	GOTO_FILE_LOCATION='/usr/bin/goto.sh'
+else
+	GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
+fi
 RC=""
 if [ -f ~/.bashrc ]; then
 	RC="$HOME/.bashrc"

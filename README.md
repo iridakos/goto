@@ -54,6 +54,12 @@ A formula named `goto` is available for the bash shell in macOS.
 brew install goto
 ```
 
+### Add colored <tab> output
+
+```bash
+echo -e "\$include /etc/inputrc\nset colored-completion-prefix on" >> ~/.inputrc
+```
+
 **Note:**
 - you need to restart your shell after installation
 - you need to have the bash completion feature enabled for bash in macOS (see this [issue](https://github.com/iridakos/goto/issues/36)):

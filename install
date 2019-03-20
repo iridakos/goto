@@ -34,8 +34,7 @@ fi
 
 # sudo-check
 if [ $EUID -ne 0 ] && [ "$ON_WINDOWS" == false ]; then
-	_goto_install_error 'Please run this script in sudo mode or as root user'
-	exit
+	SUDO=sudo
 fi
 
 HOME=$(eval echo "~${SUDO_USER}")
@@ -52,7 +51,7 @@ elif [ -f ~/.zshrc ]; then
 	RC="$HOME/.zshrc"
 fi
 
-cp ./goto.sh "$GOTO_FILE_LOCATION"
+${SUDO} cp ./goto.sh "$GOTO_FILE_LOCATION"
 
 if [ -n "$RC" ]; then
 	# Append source to RC startup file if not already there

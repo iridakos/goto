@@ -74,18 +74,7 @@ goto()
 
 _goto_resolve_db()
 {
-  if [ "$GOTO_DB" ]; then
-    GOTO_DB="$GOTO_DB/.goto"
-  else
-    # Fallback to home if there is no XDG_DATA_HOME,
-    # or if there is a db file in home and not in XDG_DATA_HOME.
-    if [ "$XDG_DATA_HOME" ] && { [ -f "$XDG_DATA_HOME/goto" ] || [ ! -f "$HOME/.goto" ]; }; then
-      GOTO_DB="$XDG_DATA_HOME/goto"
-    else
-      GOTO_DB="$HOME/.goto"
-    fi
-  fi
-
+  GOTO_DB="${GOTO_DB:-$HOME/.goto}"
   touch -a "$GOTO_DB"
 }
 

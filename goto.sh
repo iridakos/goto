@@ -111,7 +111,7 @@ USAGE
 # Displays version
 _goto_version()
 {
-  echo "goto version 1.2.3.1"
+  echo "goto version 1.2.4"
 }
 
 # Expands directory.
@@ -438,16 +438,22 @@ _complete_goto_zsh()
   return $ret
 }
 
-# Register the goto completions.
-if [ -n "${BASH_VERSION}" ]; then
-  if ! [[ $(uname -s) =~ Darwin* ]]; then
-    complete -o filenames -F _complete_goto_bash goto
-  else
-    complete -F _complete_goto_bash goto
-  fi
-elif [ -n "${ZSH_VERSION}" ]; then
-  compdef _complete_goto_zsh goto
-else
-  echo "Unsupported shell."
-  exit 1
-fi
+aliases=($(alias | sed -n "s/.*\s\(.*\)='goto'/\1/p"))
+aliases+=('goto')
+
+for i in "${aliases[@]}"
+	do
+		# Register the goto completions.
+	if [ -n "${BASH_VERSION}" ]; then
+	  if ! [[ $(uname -s) =~ Darwin* ]]; then
+	    complete -o filenames -F _complete_goto_bash $i
+	  else
+	    complete -F _complete_goto_bash $i
+	  fi
+	elif [ -n "${ZSH_VERSION}" ]; then
+	  compdef _complete_goto_zsh $i
+	else
+	  echo "Unsupported shell."
+	  exit 1
+	fi
+done

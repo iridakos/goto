@@ -111,7 +111,7 @@ USAGE
 # Displays version
 _goto_version()
 {
-  echo "goto version 1.2.4"
+  echo "goto version 1.2.4.1"
 }
 
 # Expands directory.
@@ -438,10 +438,10 @@ _complete_goto_zsh()
   return $ret
 }
 
-aliases=($(alias | sed -n "s/.*\s\(.*\)='goto'/\1/p"))
-aliases+=('goto')
+goto_aliases=($(alias | sed -n "s/.*\s\(.*\)='goto'/\1/p"))
+goto_aliases+=("goto")
 
-for i in "${aliases[@]}"
+for i in "${goto_aliases[@]}"
 	do
 		# Register the goto completions.
 	if [ -n "${BASH_VERSION}" ]; then

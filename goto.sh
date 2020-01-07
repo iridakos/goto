@@ -1,5 +1,6 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2039
+# SOURCE: https://github.com/iridakos/goto
 # MIT License
 #
 # Copyright (c) 2018 Lazarus Lazaridis
@@ -74,7 +75,8 @@ goto()
 
 _goto_resolve_db()
 {
-  GOTO_DB="${GOTO_DB:-$HOME/.goto}"
+  local CONFIG_DEFAULT="${XDG_CONFIG_HOME:-$HOME/.config/goto}"
+  GOTO_DB="${GOTO_DB:-$CONFIG_DEFAULT}"
   touch -a "$GOTO_DB"
 }
 

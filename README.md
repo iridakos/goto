@@ -79,7 +79,7 @@ echo -e "\$include /etc/inputrc\nset colored-completion-prefix on" >> ~/.inputrc
   * [Push before changing directories](#push-before-changing-directories)
   * [Revert to a pushed directory](#revert-to-a-pushed-directory)
 * [Troubleshooting](#troubleshooting)
-  * [Updating from 1.x to 2.x](#updating-from-1-x-to-2-x)
+  * [Updating from 1.x to 2.x](#updating-from-1x-to-2x)
   * [zsh](#zsh)
     * [command not found compdef](#command-not-found-compdef)
 

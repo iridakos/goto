@@ -75,7 +75,7 @@ goto()
 
 _goto_resolve_db()
 {
-  local CONFIG_DEFAULT="${XDG_CONFIG_HOME:-$HOME/.config/goto}"
+  local CONFIG_DEFAULT="${XDG_CONFIG_HOME:-$HOME/.config}/goto"
   GOTO_DB="${GOTO_DB:-$CONFIG_DEFAULT}"
   touch -a "$GOTO_DB"
 }
@@ -113,7 +113,7 @@ USAGE
 # Displays version
 _goto_version()
 {
-  echo "goto version 1.2.4.1"
+  echo "goto version 2.0.0"
 }
 
 # Expands directory.

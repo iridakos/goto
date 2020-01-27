@@ -79,6 +79,7 @@ echo -e "\$include /etc/inputrc\nset colored-completion-prefix on" >> ~/.inputrc
   * [Push before changing directories](#push-before-changing-directories)
   * [Revert to a pushed directory](#revert-to-a-pushed-directory)
 * [Troubleshooting](#troubleshooting)
+  * [Updating from 1.x to 2.x](#updating-from-1-x-to-2-x)
   * [zsh](#zsh)
     * [command not found compdef](#command-not-found-compdef)
 
@@ -237,6 +238,14 @@ goto --pop
 This command is equivalent to `popd`, but within the `goto` command.
 
 ## Troubleshooting
+
+### Updating from 1.x to 2.x
+
+From version **2.x and after**, the `goto` DB file is located in the `$XDG_CONFIG_HOME` or in the `~/.config` directory under the name `goto`.
+
+If you updated from version **1.x** to **2.x or newer**, you need to move this file which was previously located at `~/.goto`.
+
+*Note that the new file is not hidden, it does not start with a dot `.`*
 
 ### zsh
 

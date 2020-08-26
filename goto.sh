@@ -261,6 +261,12 @@ _goto_cleanup()
 # Changes to the given alias' directory
 _goto_directory()
 {
+  # directly goto the special name that unable register, eg: ~
+  if ! [[ $1 =~ ^[[:alnum:]]+[a-zA-Z0-9_-]*$ ]]; then
+    { builtin cd "$1" 2> /dev/null && return 0; } || \
+    { _goto_error "Failed to goto '$1'" && return 1; }
+  fi
+
   local target
 
   target=$(_goto_resolve_alias "$1") || return 1

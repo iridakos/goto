@@ -128,8 +128,15 @@ _goto_list_aliases()
 {
   local IFS=$' '
   if [ -f "$GOTO_DB" ]; then
+    local maxlength=0
     while read -r name directory; do
-      printf '\e[1;36m%20s  \e[0m%s\n' "$name" "$directory"
+      local length=${#name}
+      if [[ $length -gt $maxlength ]]; then
+        local maxlength=$length
+      fi
+    done < "$GOTO_DB"
+    while read -r name directory; do
+      printf "\e[1;36m%${maxlength}s  \e[0m%s\n" "$name" "$directory"
     done < "$GOTO_DB"
   else
     echo "You haven't configured any directory aliases yet."

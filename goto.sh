@@ -77,6 +77,10 @@ _goto_resolve_db()
 {
   local CONFIG_DEFAULT="${XDG_CONFIG_HOME:-$HOME/.config}/goto"
   GOTO_DB="${GOTO_DB:-$CONFIG_DEFAULT}"
+  GOTO_DB_CONFIG_DIRNAME=$(dirname "$GOTO_DB")
+  if [[ ! -d "$GOTO_DB_CONFIG_DIRNAME" ]]; then
+    mkdir "$GOTO_DB_CONFIG_DIRNAME"
+  fi
   touch -a "$GOTO_DB"
 }
 

@@ -272,7 +272,7 @@ _goto_cleanup()
 # Changes to the given alias' directory
 _goto_directory()
 {
-  # directly goto the special name that unable register, eg: ~
+  # directly goto the special name that is unable to be registered due to invalid alias, eg: ~
   if ! [[ $1 =~ ^[[:alnum:]]+[a-zA-Z0-9_-]*$ ]]; then
     { builtin cd "$1" 2> /dev/null && return 0; } || \
     { _goto_error "Failed to goto '$1'" && return 1; }

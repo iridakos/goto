@@ -117,7 +117,7 @@ USAGE
 # Displays version
 _goto_version()
 {
-  echo "goto version 2.0.0"
+  echo "goto version 2.1.0"
 }
 
 # Expands directory.

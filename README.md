@@ -148,12 +148,22 @@ Pressing the `tab` key after the command (`-u` or `--unregister`), the completio
 ### List aliases
 
 To get the list of your currently registered aliases, use:
+
 ```bash
 goto -l
 ```
+
 or
+
 ```bash
 goto --list
+```
+
+or
+
+```bash
+goto -l --sort     # or
+goto --list --sort # sort output
 ```
 
 ### Expand an alias

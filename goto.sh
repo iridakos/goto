@@ -55,7 +55,7 @@ goto()
       _goto_directory_pop
       ;;
     -l|--list)
-      _goto_list_aliases
+      _goto_list_aliases "$@"
       ;;
     -x|--expand) # Expand an alias
       _goto_expand_alias "$@"
@@ -87,7 +87,7 @@ _goto_resolve_db()
 _goto_usage()
 {
   cat <<\USAGE
-usage: goto [<option>] <alias> [<directory>]
+usage: goto [<option> <option>] <alias> [<directory>]
 
 default usage:
   goto <alias> - changes to the directory registered for the given alias
@@ -103,6 +103,7 @@ OPTIONS:
     goto -o|--pop
   -l, --list: lists aliases
     goto -l|--list
+    goto -l|--list --sort
   -x, --expand: expands an alias
     goto -x|--expand <alias>
   -c, --cleanup: cleans up non existent directory aliases
@@ -111,6 +112,11 @@ OPTIONS:
     goto -h|--help
   -v, --version: displays the version of the goto script
     goto -v|--version
+
+EXTRAS:
+  --sort: sorts output
+  goto -l --sort
+  goto --list --sort
 USAGE
 }
 
@@ -139,9 +145,12 @@ _goto_list_aliases()
         local maxlength=$length
       fi
     done < "$GOTO_DB"
+
+    line_delimeter=$(printf "${GOTO_DELIMETER_CHAR:-.}%.0s" $(eval echo {1..${maxlength}}))
     while read -r name directory; do
-      printf "\e[1;36m%${maxlength}s  \e[0m%s\n" "$name" "$directory"
-    done < "$GOTO_DB"
+      # printf "\e[1;36m%${maxlength}s  \e[0m%s\n" "$name" "$directory"
+      printf '\e[1;36m%s\e[0m %s %s\n' "${name}" "${line_delimeter:${#name}}" "$directory"
+    done < "$GOTO_DB" | if [ ! -z "${1}" ] && [ "${1}" == "--sort" ] ; then sort; else cat; fi
   else
     echo "You haven't configured any directory aliases yet."
   fi

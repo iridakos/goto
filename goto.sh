@@ -152,7 +152,7 @@ _goto_expand_alias()
 {
   if [ "$#" -ne "1" ]; then
     _goto_error "usage: goto -x|--expand <alias>"
-    return
+    return 1
   fi
 
   local resolved
@@ -160,7 +160,7 @@ _goto_expand_alias()
   resolved=$(_goto_find_alias_directory "$1")
   if [ -z "$resolved" ]; then
     _goto_error "alias '$1' does not exist"
-    return
+    return 1
   fi
 
   echo "$resolved"

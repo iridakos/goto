@@ -31,8 +31,8 @@ goto()
   _goto_resolve_db
 
   if [ -z "$1" ]; then
-    # display usage and exit when no args
-    _goto_usage
+    # display where am i and exit when no args
+    _goto_where_am_i
     return
   fi
 
@@ -71,6 +71,25 @@ goto()
       ;;
   esac
   return $?
+}
+
+_goto_where_am_i(){
+  local IFS=$' '
+  local found=false
+  if [ -f "$GOTO_DB" ]; then
+    while read -r name directory; do
+      if [ "${directory}" = $PWD ]; then
+        printf "\e[1;36m%s  \e[0m\n" "$name" 
+        found=true
+        break
+      fi
+    done < "$GOTO_DB"
+    if [ "$found" = false ]; then
+      printf "\e[1;31m%s  \e[0m\n" "$PWD" 
+    fi
+  else
+    echo "You haven't configured any directory aliases yet."
+  fi
 }
 
 _goto_resolve_db()
@@ -274,7 +293,7 @@ _goto_directory()
 {
   # directly goto the special name that is unable to be registered due to invalid alias, eg: ~
   if ! [[ $1 =~ ^[[:alnum:]]+[a-zA-Z0-9_-]*$ ]]; then
-    { builtin cd "$1" 2> /dev/null && return 0; } || \
+    { builtin cd "$1" 2> /dev/null && printf "\e[1;36m%s  \e[0m\n" "$PWD" && return 0; } || \
     { _goto_error "Failed to goto '$1'" && return 1; }
   fi
 
@@ -282,7 +301,7 @@ _goto_directory()
 
   target=$(_goto_resolve_alias "$1") || return 1
 
-  builtin cd "$target" 2> /dev/null || \
+  builtin cd "$target" 2> /dev/null && printf "\e[1;36m%s  \e[0m\n" "$PWD"  || \
     { _goto_error "Failed to goto '$target'" && return 1; }
 }
 

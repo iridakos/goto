@@ -232,7 +232,7 @@ _goto_unregister_alias()
   # shellcheck disable=SC2034
   local readonly GOTO_DB_TMP="$HOME/.goto_"
   # Delete entry from file.
-  sed "/^$1 /d" "$GOTO_DB" > "$GOTO_DB_TMP" && mv "$GOTO_DB_TMP" "$GOTO_DB"
+  sed "/^$1 /d" "$GOTO_DB" > "$GOTO_DB_TMP" && command mv "$GOTO_DB_TMP" "$GOTO_DB"
   echo "Alias '$1' unregistered successfully."
 }
 

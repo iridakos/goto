@@ -90,7 +90,8 @@ _goto_usage()
 usage: goto [<option>] <alias> [<directory>]
 
 default usage:
-  goto <alias> - changes to the directory registered for the given alias
+  goto <alias>  - changes to the directory registered for the given alias
+  goto <alias>/ - tab-enabled directory completion for the alias's subdirectories
 
 OPTIONS:
   -r, --register: registers an alias
@@ -117,7 +118,7 @@ USAGE
 # Displays version
 _goto_version()
 {
-  echo "goto version 2.1.0"
+  echo "goto version 2.1.1"
 }
 
 # Expands directory.
@@ -273,7 +274,7 @@ _goto_cleanup()
 _goto_directory()
 {
   # directly goto the special name that is unable to be registered due to invalid alias, eg: ~
-  if ! [[ $1 =~ ^[[:alnum:]]+[a-zA-Z0-9_-]*$ ]]; then
+  if ! [[ $1 =~ ^[[:alnum:]] ]]; then
     { builtin cd "$1" 2> /dev/null && return 0; } || \
     { _goto_error "Failed to goto '$1'" && return 1; }
   fi
@@ -324,17 +325,27 @@ _goto_print_similar()
 # Fetches alias directory, errors if it doesn't exist.
 _goto_resolve_alias()
 {
-  local resolved
+  local alias subpath resolved
 
-  resolved=$(_goto_find_alias_directory "$1")
+  if [[ "$1" == */* ]]; then
+    alias="${1%%/*}"
+    subpath="${1#*/}"
+  else
+    alias="$1"
+    subpath=""
+  fi
+
+  resolved=$(_goto_find_alias_directory "$alias")
 
   if [ -z "$resolved" ]; then
     _goto_error "unregistered alias $1"
     _goto_print_similar "$1"
     return 1
-  else
-    echo "${resolved}"
+  elif [ -n "$subpath" ]; then
+      resolved="${resolved}/${subpath}"
   fi
+
+  echo "${resolved}"
 }
 
 # Completes the goto function with the available commands
@@ -349,31 +360,51 @@ _complete_goto_commands()
 # Completes the goto function with the available aliases
 _complete_goto_aliases()
 {
-  local IFS=$'\n' matches
+  local IFS=$'\n' matches base_path
   _goto_resolve_db
 
-  # shellcheck disable=SC2207
-  matches=($(sed -n "/^$1/p" "$GOTO_DB" 2>/dev/null))
+  if [[ "$1" == */* ]]
+  then
+    local alias="${1%%/*}"
+    local subpath="${1#*/}"
 
-  if [ "${#matches[@]}" -eq "1" ]; then
-    # remove the filenames attribute from the completion method
-    compopt +o filenames 2>/dev/null
+    base_path=$(sed -n "s/^$alias //p" "$GOTO_DB" 2>/dev/null)
 
-    # if you find only one alias don't append the directory
-    COMPREPLY=("${matches[0]// *}")
+    if [[ -d "$base_path" ]]
+    then
+      local full_path="$base_path/$subpath"
+      local subdirs=($(compgen -d -S "/" -- "$full_path"))
+
+      COMPREPLY=()
+      for subdir in "${subdirs[@]}"
+      do
+        COMPREPLY+=("${alias}/${subdir#$base_path/}")
+      done
+    fi
   else
-    for i in "${!matches[@]}"; do
+    # shellcheck disable=SC2207
+    matches=($(sed -n "/^$1/p" "$GOTO_DB" 2>/dev/null))
+
+    if [ "${#matches[@]}" -eq "1" ]; then
       # remove the filenames attribute from the completion method
       compopt +o filenames 2>/dev/null
 
-      if ! [[ $(uname -s) =~ Darwin* ]]; then
-        matches[$i]=$(printf '%*s' "-$COLUMNS" "${matches[$i]}")
+      # if you find only one alias don't append the directory
+      COMPREPLY=("${matches[0]// *}")
+    else
+      for i in "${!matches[@]}"; do
+        # remove the filenames attribute from the completion method
+        compopt +o filenames 2>/dev/null
 
-        COMPREPLY+=("$(compgen -W "${matches[$i]}")")
-      else
-        COMPREPLY+=("${matches[$i]// */}")
-      fi
-    done
+        if ! [[ $(uname -s) =~ Darwin* ]]; then
+          matches[$i]=$(printf '%*s' "-$COLUMNS" "${matches[$i]}")
+
+          COMPREPLY+=("$(compgen -W "${matches[$i]}")")
+        else
+          COMPREPLY+=("${matches[$i]// */}")
+        fi
+      done
+    fi
   fi
 }
 
@@ -397,13 +428,13 @@ _complete_goto_bash()
 
     if [[ $prev = "-u" ]] || [[ $prev = "--unregister" ]]; then
       # prompt with aliases if user tries to unregister one
-      _complete_goto_aliases "$cur"
+      _complete_goto_aliases "${cur%%/*}"
     elif [[ $prev = "-x" ]] || [[ $prev = "--expand" ]]; then
       # prompt with aliases if user tries to expand one
-      _complete_goto_aliases "$cur"
+      _complete_goto_aliases "${cur%%/*}"
     elif [[ $prev = "-p" ]] || [[ $prev = "--push" ]]; then
       # prompt with aliases only if user tries to push
-      _complete_goto_aliases "$cur"
+      _complete_goto_aliases "${cur%%/*}"
     fi
   elif [ "$COMP_CWORD" -eq "3" ]; then
     # if we are on the third argument
@@ -466,7 +497,7 @@ for i in "${goto_aliases[@]}"
 		# Register the goto completions.
 	if [ -n "${BASH_VERSION}" ]; then
 	  if ! [[ $(uname -s) =~ Darwin* ]]; then
-	    complete -o filenames -F _complete_goto_bash $i
+	    complete -o nospace -o filenames -F _complete_goto_bash $i
 	  else
 	    complete -F _complete_goto_bash $i
 	  fi

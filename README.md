@@ -23,7 +23,7 @@ goto dev
 
 ```bash
 $ goto <tab>
-bc /etc/bash_completion.d                     
+bc /etc/bash_completion.d
 dev /home/iridakos/development
 rubies /home/iridakos/.rvm/rubies
 ```
@@ -236,6 +236,16 @@ goto --pop
 #### Notes
 
 This command is equivalent to `popd`, but within the `goto` command.
+
+### Fzf integration (Zsh only)
+
+To select an alias interactively, there is a Fzf widget (currently for Zsh only). To activate it, put the autoloadable function `zsh/site-functions/fzf-goto-widget` into a directory onto your `$fpath` and add the following to your `.zshrc`:
+
+```zsh
+autoload -Uz fzf-goto-widget
+zle -N fzf-goto-widget
+bindkey '^G' fzf-goto-widget
+```
 
 ## Troubleshooting
 

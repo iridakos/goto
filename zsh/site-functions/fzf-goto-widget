@@ -1,0 +1,12 @@
+_goto_resolve_db
+local dir="$(sed 's/ /:/' $GOTO_DB | column -t -s : | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_GOTO_OPTS" fzf | sed "s/^[a-zA-Z]* *//")"
+if [[ -z "$dir" ]]; then
+    zle redisplay
+    return 0
+fi
+zle push-line # Clear buffer. Auto-restored on next prompt.
+BUFFER="cd -- ${(q)dir}"
+zle accept-line
+local ret=$?
+zle reset-prompt
+return $ret

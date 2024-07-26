@@ -426,7 +426,7 @@ _complete_goto_zsh()
   _goto_resolve_db
   while IFS= read -r line; do
     all_aliases+=("$line")
-  done <<< "$(sed -e 's/ /:/g' $GOTO_DB 2>/dev/null)"
+  done <<< "$(sed -e 's/ /:/' $GOTO_DB 2>/dev/null)"
 
   local state
   local -a options=(

@@ -23,7 +23,7 @@ goto dev
 
 ```bash
 $ goto <tab>
-bc /etc/bash_completion.d                     
+bc /etc/bash_completion.d
 dev /home/iridakos/development
 rubies /home/iridakos/.rvm/rubies
 ```
@@ -31,11 +31,11 @@ rubies /home/iridakos/.rvm/rubies
 ## Installation
 
 ### Via script
-Clone the repository and run the install script as super user or root:
+Clone the repository and run the install script. Pass an optional directory location if desired.
 ```bash
 git clone https://github.com/iridakos/goto.git
 cd goto
-sudo ./install
+./install [dir]
 ```
 
 ### Manually

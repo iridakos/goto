@@ -413,6 +413,7 @@ _complete_goto_bash()
       alias_dir=$(_goto_find_alias_directory "$prev")
       if [ -n "$alias_dir" ]; then
         local IFS=$' \t\n'
+        compopt -o nospace 2>/dev/null
         COMPREPLY=($(cd "$alias_dir" 2>/dev/null && compgen -d -- "$cur"))
       fi
     fi

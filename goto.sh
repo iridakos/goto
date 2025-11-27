@@ -67,7 +67,7 @@ goto()
       _goto_version
       ;;
     *)
-      _goto_directory "$subcommand"
+      _goto_directory "$subcommand" "$@"
       ;;
   esac
   return $?
@@ -282,6 +282,9 @@ _goto_directory()
 
   target=$(_goto_resolve_alias "$1") || return 1
 
+  # Append subpath if provided
+  [ -n "$2" ] && target="$target/$2"
+
   builtin cd "$target" 2> /dev/null || \
     { _goto_error "Failed to goto '$target'" && return 1; }
 }
@@ -404,6 +407,15 @@ _complete_goto_bash()
     elif [[ $prev = "-p" ]] || [[ $prev = "--push" ]]; then
       # prompt with aliases only if user tries to push
       _complete_goto_aliases "$cur"
+    else
+      # check if prev is an alias, if so provide directory completion from that path
+      local alias_dir
+      alias_dir=$(_goto_find_alias_directory "$prev")
+      if [ -n "$alias_dir" ]; then
+        local IFS=$' \t\n'
+        compopt -o nospace 2>/dev/null
+        COMPREPLY=($(cd "$alias_dir" 2>/dev/null && compgen -d -- "$cur"))
+      fi
     fi
   elif [ "$COMP_CWORD" -eq "3" ]; then
     # if we are on the third argument

@@ -41,10 +41,16 @@ fi
 HOME=$(eval echo "~${SUDO_USER}")
 if [[ $ON_WINDOWS = true ]]; then
 	GOTO_FILE_LOCATION='/usr/bin/goto.sh'
+	GOTO_FISH_FILE_LOCATION='/usr/bin/goto.fish'
 else
 	GOTO_FILE_LOCATION='/usr/local/share/goto.sh'
+	GOTO_FISH_FILE_LOCATION='/usr/local/share/goto.fish'
 fi
 
+# Tracks whether goto was wired into at least one shell's startup file.
+INSTALLED=false
+
+# --- bash / zsh ----------------------------------------------------------
 RC=""
 if [ -f ~/.bashrc ]; then
 	RC="$HOME/.bashrc"
@@ -63,7 +69,34 @@ if [ -n "$RC" ]; then
 
 	# shellcheck source=/dev/null
 	source "$GOTO_FILE_LOCATION"
-else
+	INSTALLED=true
+fi
+
+# --- fish ----------------------------------------------------------------
+# Install the fish-native implementation when the user has fish installed or a
+# fish configuration directory. goto.sh cannot be sourced by fish, so a
+# dedicated goto.fish is shipped that keeps the same aliases database format.
+FISH_CONFIG_DIR="$HOME/.config/fish"
+if [ -d "$FISH_CONFIG_DIR" ] || command -v fish >/dev/null 2>&1; then
+	cp ./goto.fish "$GOTO_FISH_FILE_LOCATION"
+
+	FISH_CONFIG="$FISH_CONFIG_DIR/config.fish"
+	mkdir -p "$FISH_CONFIG_DIR"
+
+	# Append source to config.fish if not already there
+	if [ ! -f "$FISH_CONFIG" ] || [ "$(grep -c "source $GOTO_FISH_FILE_LOCATION" "$FISH_CONFIG")" == "0" ]; then
+		echo -e "\\n\\n# Source goto\\ntest -f $GOTO_FISH_FILE_LOCATION; and source $GOTO_FISH_FILE_LOCATION\\n" >> "$FISH_CONFIG"
+	fi
+
+	# Make sure the fish config stays owned by the user when run via sudo.
+	if [ -n "$SUDO_USER" ]; then
+		chown -R "$SUDO_USER" "$FISH_CONFIG_DIR"
+	fi
+
+	INSTALLED=true
+fi
+
+if [ "$INSTALLED" == false ]; then
 	_goto_install_error "Error sourcing goto in your startup file.."
-	_goto_install_error "E.g ~/.bashrc ~/.zshrc etc.."
+	_goto_install_error "E.g ~/.bashrc ~/.zshrc ~/.config/fish/config.fish etc.."
 fi

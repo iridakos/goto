@@ -38,6 +38,8 @@ cd goto
 sudo ./install
 ```
 
+The install script detects `bash`/`zsh` and `fish` and configures each that is present.
+
 ### Manually
 Copy the file `goto.sh` somewhere in your filesystem and add a line in your `.zshrc` or `.bashrc` to source it.
 
@@ -45,6 +47,16 @@ For example, if you placed the file in your home folder, all you have to do is a
 
 ```bash
 source ~/goto.sh
+```
+
+### fish
+
+`goto.sh` cannot be sourced by [fish](https://fishshell.com) (its syntax is incompatible). Instead a small `goto.fish` wrapper is shipped: it delegates all logic to `goto.sh` (run via bash) and only handles the directory change in fish itself, so `goto.sh` stays the single source of truth. The install script sets it up automatically.
+
+To install it manually, copy both `goto.sh` and `goto.fish` into the same directory and source the wrapper from your `~/.config/fish/config.fish`:
+
+```fish
+source ~/goto.fish
 ```
 
 ### macOS - Homebrew
